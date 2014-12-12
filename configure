@@ -9,7 +9,7 @@ CFLAGS="-Wall -c -I $IDIR"
 echo "all: server" > Makefile
 objs=$(ls $SDIR/*.cpp | sed -r 's/\.cpp/\.o/g' | sed -r 's/'$SDIR'\//'$ODIR'\//g')
 echo "server: "$objs >> Makefile
-echo -e "\t""g++ $objs $LFLAGS -o server" >> Makefile
+echo -e "\t""g++ "$objs" $LFLAGS -o server" >> Makefile
 
 for file in $SDIR/*.cpp
 do
