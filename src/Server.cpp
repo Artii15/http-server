@@ -30,7 +30,7 @@ void Server::configureSocket() {
 }
 
 void Server::createSocket() {
-    int nSocket = socket(AF_INET, SOCK_STREAM, 0);
+    nSocket = socket(AF_INET, SOCK_STREAM, 0);
     if(nSocket < 0) {
         throw string("Couldn't create socket"); // TODO: Create proper exception class insetad of using strings
     }
