@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 Server::Server(int port, int queueSize) {
     this->port = port;
@@ -50,4 +51,8 @@ void Server::assignQueueSize() {
     if(nListen < 0) {
         throw string("Couldn't bind name to the socket"); // TODO: Create proper exception class insetad of using strings
     }
+}
+
+Server::~Server() {
+    close(nSocket);
 }

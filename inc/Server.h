@@ -18,4 +18,5 @@ class Server {
         void assignQueueSize();
     public:
         Server(int port, int queueSize);
+        ~Server();
 };
