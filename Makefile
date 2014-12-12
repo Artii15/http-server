@@ -1,19 +1,7 @@
-CPP_FILES = $(wildcard src/*.cpp)
-OBJ_FILES = $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
-LD_FLAGS = -Wall
-CC_FLAGS = -Wall
-CC = g++
-
-all: main
-
-main: $(OBJ_FILES)
-	$(CC) $(LD_FLAGS) -o $@ $^
-
-obj/%.o: src/%.cpp
-	$(CC) $(CC_FLAGS) -c -o $@ $<
-
-CC_FLAGS += -MMD
--include $(OBJFILES:.o=.d)
-
+all: server
+server: obj/main.o
+	g++ obj/main.o -Wall -o server
+obj/main.o: src/main.cpp inc/test2.h
+	g++ src/main.cpp -o $@ -Wall -c -I inc
 clean:
-	rm -f $(OBJ_FILES)
+	rm -f obj/*
