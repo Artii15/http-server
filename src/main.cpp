@@ -1,4 +1,6 @@
 #include "Server.h"
+#include <stdlib.h>
+#include <signal.h>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,14 +9,43 @@
 
 using namespace std;
 
+Server *server = NULL;
+
+void initialize();
+void startServer();
+void stopServer(int signum);
+
 int main() {
+    initialize();
+    signal(SIGINT, stopServer);
+    startServer();
+
+    exit(0);
+}
+
+void initialize() {
     try {
-        Server server(SERVER_PORT, QUEUE_SIZE);
-        server.start();
+        server = new Server(SERVER_PORT, QUEUE_SIZE);
     }
     catch(exception &ex) {
         cout << ex.what() << endl; 
+        exit(1);
     }
+}
 
-    return 0;
+void startServer() {
+    while(1) {
+        try {
+            server->waitForConnection();
+        }
+        catch(exception &ex) {
+            cout << ex.what() << endl; 
+            exit(1);
+        }
+    }
+}
+
+void stopServer(int signum) {
+    delete server;
+    exit(0);
 }

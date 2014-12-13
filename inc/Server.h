@@ -25,7 +25,7 @@ class Server {
         static void* handleConnection(void *arg);
     public:
         Server(int port, int queueSize);
-        void start();
+        void waitForConnection();
         ~Server();
 };
 
