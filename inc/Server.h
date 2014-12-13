@@ -29,7 +29,7 @@ class Server {
         static ConnectionHandler* setHttpConnectionHandler(int sck);
     public:
         Server(int port, int queueSize);
-        void waitForConnection();
+        void start();
         ~Server();
 };
 

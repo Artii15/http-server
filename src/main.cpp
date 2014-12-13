@@ -34,14 +34,12 @@ void initialize() {
 }
 
 void startServer() {
-    while(1) {
-        try {
-            server->waitForConnection();
-        }
-        catch(exception &ex) {
-            cout << ex.what() << endl; 
-            exit(1);
-        }
+    try {
+        server->start();
+    }
+    catch(exception &ex) {
+        cout << ex.what() << endl; 
+        exit(1);
     }
 }
 
