@@ -13,15 +13,27 @@ Server::Server(int port, int queueSize) {
 }
 
 void Server::initialize() {
-    initializeMutex();
+    configureConnectionHandler();
+    configureMutex();
     configureAddr();
     configureSocket();
 }
 
-void Server::initializeMutex() {
+void Server::configureMutex() {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
     pthread_mutex_init(&sckMutex, &attr);
+}
+
+void Server::configureConnectionHandler() {
+    switch(port) {
+        case 80:
+            connectionHandlerFactory = &Server::setHttpConnectionHandler;
+            break;
+        default:
+            throw runtime_error("Not supported service");
+            break;
+    }
 }
 
 void Server::configureAddr() {
@@ -83,11 +95,17 @@ void* Server::handleConnection(void *arg) {
     int sck = context->nClientSocket;
     pthread_mutex_unlock(&(context->sckMutex));
 
-    sleep(5);
-    
-    close(sck);
+    ConnectionHandler* handler = context->connectionHandlerFactory();
+    handler->setSocket(sck);
+    handler->handleConnection();
+
+    delete handler;
 
     return 0;
+}
+
+ConnectionHandler* Server::setHttpConnectionHandler() {
+    return new HttpConnectionHandler();
 }
 
 Server::~Server() {

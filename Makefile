@@ -1,9 +1,13 @@
 all: server
-server: obj/main.o obj/Server.o
-	g++ obj/main.o obj/Server.o -Wall -lpthread -o server
-obj/main.o: src/main.cpp inc/Server.h
+server: obj/ConnectionHandler.o obj/HttpConnectionHandler.o obj/main.o obj/Server.o
+	g++ obj/ConnectionHandler.o obj/HttpConnectionHandler.o obj/main.o obj/Server.o -Wall -lpthread -o server
+obj/ConnectionHandler.o: src/ConnectionHandler.cpp inc/ConnectionHandler.h
+	g++ src/ConnectionHandler.cpp -o $@ -Wall -c -I inc
+obj/HttpConnectionHandler.o: src/HttpConnectionHandler.cpp inc/HttpConnectionHandler.h inc/ConnectionHandler.h
+	g++ src/HttpConnectionHandler.cpp -o $@ -Wall -c -I inc
+obj/main.o: src/main.cpp inc/Server.h inc/HttpConnectionHandler.h inc/ConnectionHandler.h
 	g++ src/main.cpp -o $@ -Wall -c -I inc
-obj/Server.o: src/Server.cpp inc/Server.h
+obj/Server.o: src/Server.cpp inc/Server.h inc/HttpConnectionHandler.h inc/ConnectionHandler.h
 	g++ src/Server.cpp -o $@ -Wall -c -I inc
 clean:
 	rm -f obj/*

@@ -13,7 +13,7 @@ echo -e "\t""g++ "$objs" $LFLAGS -o server" >> Makefile
 
 for file in $SDIR/*.cpp
 do
-	echo $ODIR"/"$(g++ -MM -I $IDIR $file) >> Makefile
+	echo $ODIR"/"$(g++ -MM -I $IDIR $file | sed -r 's/\\//g') >> Makefile
 	echo -e "\t""g++ $file -o \$@ "$CFLAGS >> Makefile
 done
 

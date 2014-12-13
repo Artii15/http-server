@@ -3,6 +3,7 @@
 
 #include <netinet/in.h>
 #include <pthread.h>
+#include "HttpConnectionHandler.h"
 
 using namespace std;
 
@@ -14,15 +15,18 @@ class Server {
         int nSocket;
         int nClientSocket; 
         pthread_mutex_t sckMutex;
+        ConnectionHandler* (*connectionHandlerFactory)();
 
         void initialize();
-        void initializeMutex();
+        void configureConnectionHandler();
+        void configureMutex();
         void configureAddr();
         void configureSocket();
         void createSocket();
         void bindSocket();
         void assignQueueSize();
         static void* handleConnection(void *arg);
+        static ConnectionHandler* setHttpConnectionHandler();
     public:
         Server(int port, int queueSize);
         void waitForConnection();
