@@ -95,8 +95,7 @@ void* Server::handleConnection(void *arg) {
     int sck = context->nClientSocket;
     pthread_mutex_unlock(&(context->sckMutex));
 
-    ConnectionHandler* handler = context->connectionHandlerFactory();
-    handler->setSocket(sck);
+    ConnectionHandler* handler = context->connectionHandlerFactory(sck);
     handler->handleConnection();
 
     delete handler;
@@ -104,8 +103,8 @@ void* Server::handleConnection(void *arg) {
     return 0;
 }
 
-ConnectionHandler* Server::setHttpConnectionHandler() {
-    return new HttpConnectionHandler();
+ConnectionHandler* Server::setHttpConnectionHandler(int sck) {
+    return new HttpConnectionHandler(sck);
 }
 
 Server::~Server() {

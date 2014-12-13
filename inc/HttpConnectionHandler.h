@@ -5,6 +5,7 @@
 
 class HttpConnectionHandler: public ConnectionHandler {
     public:
+        HttpConnectionHandler(int sck);
         void handleConnection();
 };
 

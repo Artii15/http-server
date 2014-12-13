@@ -5,7 +5,7 @@ class ConnectionHandler {
     protected:
         int sck;
     public:
-        void setSocket(int sck);
+        ConnectionHandler(int sck);
         virtual void handleConnection() = 0;
         virtual ~ConnectionHandler();
 };

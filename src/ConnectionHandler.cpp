@@ -1,7 +1,7 @@
 #include "ConnectionHandler.h"
 #include <unistd.h>
 
-void ConnectionHandler::setSocket(int sck) {
+ConnectionHandler::ConnectionHandler(int sck) {
     this->sck = sck;
 }
 

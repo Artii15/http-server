@@ -15,7 +15,7 @@ class Server {
         int nSocket;
         int nClientSocket; 
         pthread_mutex_t sckMutex;
-        ConnectionHandler* (*connectionHandlerFactory)();
+        ConnectionHandler* (*connectionHandlerFactory)(int);
 
         void initialize();
         void configureConnectionHandler();
@@ -26,7 +26,7 @@ class Server {
         void bindSocket();
         void assignQueueSize();
         static void* handleConnection(void *arg);
-        static ConnectionHandler* setHttpConnectionHandler();
+        static ConnectionHandler* setHttpConnectionHandler(int sck);
     public:
         Server(int port, int queueSize);
         void waitForConnection();
