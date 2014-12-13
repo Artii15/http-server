@@ -1,5 +1,7 @@
+#ifndef SERVER_H
+#define SERVER_H
+
 #include <netinet/in.h>
-#include <string>
 
 using namespace std;
 
@@ -20,3 +22,5 @@ class Server {
         Server(int port, int queueSize);
         ~Server();
 };
+
+#endif
