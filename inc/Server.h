@@ -12,7 +12,8 @@ class Server {
         int port;
         int queueSize;
         int nSocket;
-        pthread_mutex_t sockMutex;
+        int nClientSocket; 
+        pthread_mutex_t sckMutex;
 
         void initialize();
         void initializeMutex();

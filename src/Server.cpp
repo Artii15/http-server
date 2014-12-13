@@ -21,7 +21,7 @@ void Server::initialize() {
 void Server::initializeMutex() {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
-    pthread_mutex_init(&sockMutex, &attr);
+    pthread_mutex_init(&sckMutex, &attr);
 }
 
 void Server::configureAddr() {
@@ -62,26 +62,37 @@ void Server::assignQueueSize() {
 
 void Server::start() {
     while(1) {
+        pthread_mutex_lock(&sckMutex);
+
         struct sockaddr_in stClientAddr;
         socklen_t nTmp = sizeof(struct sockaddr);
-        int nClientSocket = accept(nSocket, (struct sockaddr*)&stClientAddr, &nTmp);
+        nClientSocket = accept(nSocket, (struct sockaddr*)&stClientAddr, &nTmp);
 
         if(nClientSocket < 0) {
             throw runtime_error("Couldn't create conncetion's socket");
         }
 
         pthread_t threadId;
-        pthread_create(&threadId, NULL, &Server::handleConnection, &nClientSocket);
+        pthread_create(&threadId, NULL, &Server::handleConnection, this);
+
+        pthread_mutex_lock(&sckMutex);
+        pthread_mutex_unlock(&sckMutex);
     }
 }
 
 void* Server::handleConnection(void *arg) {
-    //close(sockFd);
+    Server *context = (Server*)arg;
+    int sck = context->nClientSocket;
+
+    pthread_mutex_unlock(&(context->sckMutex));
+    sleep(5);
+    
+    close(sck);
 
     return 0;
 }
 
 Server::~Server() {
-    pthread_mutex_destroy(&sockMutex);
+    pthread_mutex_destroy(&sckMutex);
     close(nSocket);
 }
