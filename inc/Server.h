@@ -9,17 +9,19 @@ class Server {
     private: 
         struct sockaddr_in stAddr;
         int port;
-        int nSocket;
         int queueSize;
+        int nSocket;
 
-        Server();
+        void initialize();
         void configureAddr();
         void configureSocket();
         void createSocket();
         void bindSocket();
         void assignQueueSize();
+        void handleConnection(int sockFd);
     public:
         Server(int port, int queueSize);
+        void start();
         ~Server();
 };
 

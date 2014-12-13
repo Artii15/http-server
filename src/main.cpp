@@ -1,5 +1,4 @@
 #include "Server.h"
-#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,6 +10,7 @@ using namespace std;
 int main() {
     try {
         Server server(SERVER_PORT, QUEUE_SIZE);
+        server.start();
     }
     catch(exception &ex) {
         cout << ex.what() << endl; 

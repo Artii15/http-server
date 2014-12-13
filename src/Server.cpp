@@ -5,14 +5,15 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdexcept>
+#include <stdio.h>
 
 Server::Server(int port, int queueSize) {
     this->port = port;
     this->queueSize = queueSize;
-    Server();
+    initialize();
 }
 
-Server::Server() {
+void Server::initialize() {
     configureAddr();
     configureSocket();
 }
@@ -37,7 +38,6 @@ void Server::createSocket() {
     }
     int nFoo = 1;
     setsockopt(nSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&nFoo, sizeof(nFoo));
-    
 }
 
 void Server::bindSocket() {
@@ -50,8 +50,29 @@ void Server::bindSocket() {
 void Server::assignQueueSize() {
     int nListen = listen(nSocket, queueSize);
     if(nListen < 0) {
-        throw runtime_error("Couldn't bind name to the socket");
+        throw runtime_error("Couldn't assign queue size");
     }
+}
+
+void Server::start() {
+    printf("%d\n", nSocket);
+    while(1) {
+        struct sockaddr_in stClientAddr;
+        socklen_t nTmp = sizeof(struct sockaddr);
+        int nClientSocket = accept(nSocket, (struct sockaddr*)&stClientAddr, &nTmp);
+
+        if(nClientSocket < 0) {
+            printf("%d\n", nSocket);
+            perror("accept");
+            throw runtime_error("Couldn't create conncetion's socket");
+        }
+
+        handleConnection(nClientSocket);
+    }
+}
+
+void Server::handleConnection(int sockFd) {
+    close(sockFd);
 }
 
 Server::~Server() {
