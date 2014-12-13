@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdexcept>
-#include <stdio.h>
+#include <pthread.h>
 
 Server::Server(int port, int queueSize) {
     this->port = port;
@@ -55,24 +55,24 @@ void Server::assignQueueSize() {
 }
 
 void Server::start() {
-    printf("%d\n", nSocket);
     while(1) {
         struct sockaddr_in stClientAddr;
         socklen_t nTmp = sizeof(struct sockaddr);
         int nClientSocket = accept(nSocket, (struct sockaddr*)&stClientAddr, &nTmp);
 
         if(nClientSocket < 0) {
-            printf("%d\n", nSocket);
-            perror("accept");
             throw runtime_error("Couldn't create conncetion's socket");
         }
 
-        handleConnection(nClientSocket);
+        pthread_t threadId;
+        pthread_create(&threadId, NULL, &Server::handleConnection, &nClientSocket);
     }
 }
 
-void Server::handleConnection(int sockFd) {
-    close(sockFd);
+void* Server::handleConnection(void *arg) {
+    //close(sockFd);
+
+    return 0;
 }
 
 Server::~Server() {

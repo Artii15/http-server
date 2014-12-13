@@ -18,7 +18,7 @@ class Server {
         void createSocket();
         void bindSocket();
         void assignQueueSize();
-        void handleConnection(int sockFd);
+        static void* handleConnection(void *arg);
     public:
         Server(int port, int queueSize);
         void start();
