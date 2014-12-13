@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include <netinet/in.h>
+#include <pthread.h>
 
 using namespace std;
 
@@ -11,8 +12,10 @@ class Server {
         int port;
         int queueSize;
         int nSocket;
+        pthread_mutex_t sockMutex;
 
         void initialize();
+        void initializeMutex();
         void configureAddr();
         void configureSocket();
         void createSocket();

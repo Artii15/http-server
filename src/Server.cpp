@@ -5,7 +5,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdexcept>
-#include <pthread.h>
 
 Server::Server(int port, int queueSize) {
     this->port = port;
@@ -14,8 +13,15 @@ Server::Server(int port, int queueSize) {
 }
 
 void Server::initialize() {
+    initializeMutex();
     configureAddr();
     configureSocket();
+}
+
+void Server::initializeMutex() {
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutex_init(&sockMutex, &attr);
 }
 
 void Server::configureAddr() {
@@ -76,5 +82,6 @@ void* Server::handleConnection(void *arg) {
 }
 
 Server::~Server() {
+    pthread_mutex_destroy(&sockMutex);
     close(nSocket);
 }
