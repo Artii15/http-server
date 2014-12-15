@@ -18,8 +18,9 @@ void HttpHeaderReader::readHeader() {
 
     finishedReading = false;
     
-    while((read(sck, buf, bufSize) > 0) && !finishedReading) {
+    while(!finishedReading && (read(sck, buf, bufSize) > 0)) {
         getLines(buf);
+        checkIfFinished();
         bzero(buf, bufSize);
     }
 }
@@ -30,9 +31,27 @@ void HttpHeaderReader::getLines(char* buf) {
         currentLine += buf[i];
         if(buf[i] == '\n') {
             headerLines.push_back(currentLine);
-            cout << currentLine;
             currentLine = "";
         }
         i++;
+    }
+}
+
+void HttpHeaderReader::checkIfFinished() {
+    if(headerLines.empty()) {
+        return;
+    }
+    if(!currentLine.empty()) {
+        return;
+    }
+    string *lastLine = &(headerLines.back());
+    int lastLineLength = lastLine->length();
+
+    if(lastLineLength == 1 && lastLine->at(0) == '\n') {
+        finishedReading = true;
+        return;
+    }
+    if(lastLineLength > 1 && lastLine->at(0) == '\r' && lastLine->at(1) == '\n') {
+        finishedReading = true;
     }
 }

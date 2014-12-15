@@ -15,6 +15,7 @@ class HttpHeaderReader {
         string currentLine;
 
         void getLines(char* buf);
+        void checkIfFinished();
     public:
         HttpHeaderReader(int sck, unsigned bufSize = 1000); 
         void readHeader();
