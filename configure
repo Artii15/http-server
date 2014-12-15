@@ -3,8 +3,8 @@ IDIR=inc
 SDIR=src
 ODIR=obj
 CC=g++
-LFLAGS="-Wall -lpthread"
-CFLAGS="-Wall -c -I $IDIR"
+LFLAGS="-Wall -O3 -lpthread"
+CFLAGS="-Wall -O3 -c -I $IDIR"
 
 echo "all: server" > Makefile
 objs=$(ls $SDIR/*.cpp | sed -r 's/\.cpp/\.o/g' | sed -r 's/'$SDIR'\//'$ODIR'\//g')
