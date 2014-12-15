@@ -1,8 +1,4 @@
 #include "HttpConnectionHandler.h"
-#include <unistd.h>
-#include <iostream>
-#include <strings.h>
-#include <string.h>
 
 using namespace std;
 

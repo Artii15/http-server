@@ -9,10 +9,14 @@ using namespace std;
 class HttpHeaderReader {
     private:
         int sck;
+        unsigned bufSize;
+        bool finishedReading;
         list<string> headerLines; 
         string currentLine;
+
+        void getLines(char* buf);
     public:
-        HttpHeaderReader(int sck); 
+        HttpHeaderReader(int sck, unsigned bufSize = 1000); 
         void readHeader();
 };
 
