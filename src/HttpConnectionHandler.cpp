@@ -4,18 +4,17 @@
 #include <strings.h>
 #include <string.h>
 
-#define BUF_SIZE 1000
-
 using namespace std;
 
 HttpConnectionHandler::HttpConnectionHandler(int sck) 
-: ConnectionHandler(sck) {}
+: ConnectionHandler(sck) {
+    reader = new HttpHeaderReader(sck);
+}
 
 void HttpConnectionHandler::handleConnection() {
-    char buf[BUF_SIZE] = { '\0' };
+    reader->readHeader();    
+}
 
-    while((read(sck, buf, sizeof(buf))) > 0) {
-        
-    }
-    
+HttpConnectionHandler::~HttpConnectionHandler() {
+    delete reader;
 }
