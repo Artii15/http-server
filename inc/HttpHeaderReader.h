@@ -20,6 +20,7 @@ class HttpHeaderReader {
         bool headerReaded();
         void mapHeader();
         void mapFirstLine(const string &line);
+        void mapAttributeLine(const string &line);
     public:
         HttpHeaderReader(const unsigned int bufSize = 1024); 
         void readHeader(const int sck);

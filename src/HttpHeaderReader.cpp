@@ -61,10 +61,10 @@ void HttpHeaderReader::mapHeader() {
     }
 
     list<string>::iterator lineIt = headerLines.begin();
-    mapFirstLine(*lineIt);
 
-    for(; lineIt != headerLines.end(); lineIt++) {
-        cout << *lineIt;
+    mapFirstLine(*lineIt);
+    for(lineIt++; lineIt != headerLines.end(); lineIt++) {
+        mapAttributeLine(*lineIt);
     }
 }
 
@@ -88,10 +88,30 @@ void HttpHeaderReader::mapFirstLine(const string &line) {
     while(i < lineLength && !isspace(line[i])) {
         processedHeader["protocol"] += line[i++];
     }
+}
 
-    cout << processedHeader["method"] << endl;
-    cout << processedHeader["route"] << endl;
-    cout << processedHeader["protocol"] << endl;
+void HttpHeaderReader::mapAttributeLine(const string &line) {
+    unsigned int i = 0;
+    unsigned int lineLength = line.length();
+
+    string key = "";
+    while(i < lineLength && line[i] != ':' && !isspace(line[i])) {
+        key += line[i++];
+    }
+    i++;
+
+    while(i < lineLength && isspace(line[i])) {
+        i++;
+    }
+    
+    string value = "";
+    while(i < lineLength && line[i] != '\r' && line[i] != '\n') {
+        value += line[i++];
+    }
+
+    if(!key.empty() && !value.empty()) {
+        processedHeader[key] = value;
+    }
 }
 
 HttpHeaderReader::~HttpHeaderReader() {
