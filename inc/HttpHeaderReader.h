@@ -13,7 +13,7 @@ class HttpHeaderReader {
         unsigned int bufSize;
 
         string processedLine;
-        list<string> headerLines; 
+        list<string> linesBuffer; 
         map<string, string> processedHeader;
 
         void processBuffer();

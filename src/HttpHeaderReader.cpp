@@ -23,7 +23,7 @@ void HttpHeaderReader::readHeader(const int sck) {
     } while(!headerReaded());
     
     mapHeader();
-    headerLines.clear();
+    linesBuffer.clear();
 }
 
 void HttpHeaderReader::processBuffer() {
@@ -31,7 +31,7 @@ void HttpHeaderReader::processBuffer() {
     while(i < bufSize && buffer[i] != '\0') {
         processedLine += buffer[i];
         if(buffer[i] == '\n') {
-            headerLines.push_back(processedLine);
+            linesBuffer.push_back(processedLine);
             processedLine = "";
         }
         i++;
@@ -39,11 +39,11 @@ void HttpHeaderReader::processBuffer() {
 }
 
 bool HttpHeaderReader::headerReaded() {
-    if(headerLines.empty()) {
+    if(linesBuffer.empty()) {
         return false;
     }
 
-    string *lastLine = &(headerLines.back());
+    string *lastLine = &(linesBuffer.back());
     int lastLineLength = lastLine->length();
 
     if(lastLineLength > 0 && lastLine->at(0) == '\n') {
@@ -56,14 +56,14 @@ bool HttpHeaderReader::headerReaded() {
 }
 
 void HttpHeaderReader::mapHeader() {
-    if(headerLines.empty()) {
+    if(linesBuffer.empty()) {
         return;
     }
 
-    list<string>::iterator lineIt = headerLines.begin();
+    list<string>::iterator lineIt = linesBuffer.begin();
 
     mapFirstLine(*lineIt);
-    for(lineIt++; lineIt != headerLines.end(); lineIt++) {
+    for(lineIt++; lineIt != linesBuffer.end(); lineIt++) {
         mapAttributeLine(*lineIt);
     }
 }
