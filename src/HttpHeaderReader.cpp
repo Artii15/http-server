@@ -37,13 +37,11 @@ bool HttpHeaderReader::headerReaded() {
     if(headerLines.empty()) {
         return false;
     }
-    if(!processedLine.empty()) {
-        return false;
-    }
+
     string *lastLine = &(headerLines.back());
     int lastLineLength = lastLine->length();
 
-    if(lastLineLength == 1 && lastLine->at(0) == '\n') {
+    if(lastLineLength > 0 && lastLine->at(0) == '\n') {
         return true;
     }
     if(lastLineLength > 1 && lastLine->at(0) == '\r' && lastLine->at(1) == '\n') {
