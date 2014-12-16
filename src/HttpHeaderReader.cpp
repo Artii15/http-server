@@ -14,7 +14,6 @@ HttpHeaderReader::HttpHeaderReader(const unsigned int bufSize) {
 void HttpHeaderReader::readHeader(const int sck) {
     bzero(buffer, bufSize);
     processedLine = "";
-    headerLines.clear();
     processedHeader.clear();
 
     do {
@@ -24,6 +23,7 @@ void HttpHeaderReader::readHeader(const int sck) {
     } while(!headerReaded());
     
     mapHeader();
+    headerLines.clear();
 }
 
 void HttpHeaderReader::processBuffer() {
@@ -112,6 +112,10 @@ void HttpHeaderReader::mapAttributeLine(const string &line) {
     if(!key.empty() && !value.empty()) {
         processedHeader[key] = value;
     }
+}
+
+string& HttpHeaderReader::get(const string &key) {
+    return processedHeader[key]; 
 }
 
 HttpHeaderReader::~HttpHeaderReader() {

@@ -24,6 +24,7 @@ class HttpHeaderReader {
     public:
         HttpHeaderReader(const unsigned int bufSize = 1024); 
         void readHeader(const int sck);
+        string& get(const string &key);
 
         ~HttpHeaderReader();
 };
