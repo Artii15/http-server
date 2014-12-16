@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <strings.h>
-#include <iostream>
 
 using namespace std;
 
