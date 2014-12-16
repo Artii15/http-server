@@ -11,14 +11,14 @@ class HttpHeaderReader {
         int sck;
         char* buffer;
         unsigned int bufSize;
-        bool finishedReading;
+
         string processedLine;
         list<string> headerLines; 
 
         void processBuffer();
-        void checkIfFinished();
+        bool headerReaded();
     public:
-        HttpHeaderReader(int sck, unsigned int bufSize = 1000); 
+        HttpHeaderReader(int sck, unsigned int bufSize = 1024); 
         void readHeader();
 
         ~HttpHeaderReader();
