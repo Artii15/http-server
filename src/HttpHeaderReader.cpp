@@ -8,20 +8,20 @@ using namespace std;
 
 HttpHeaderReader::HttpHeaderReader(const unsigned int bufSize) {
     this->bufSize = bufSize;
-    buffer = new char[bufSize];
 }
 
 void HttpHeaderReader::readHeader(const int sck) {
-    bzero(buffer, bufSize);
     processedLine = "";
     processedHeader.clear();
 
+    buffer = new char[bufSize]();
     do {
         ssize_t bytesReceived = read(sck, buffer, bufSize);
         processBuffer();
         bzero(buffer, bytesReceived);
     } while(!headerReaded());
-    
+    delete [] buffer;
+
     mapHeader();
     linesBuffer.clear();
 }
@@ -116,8 +116,4 @@ void HttpHeaderReader::mapAttributeLine(const string &line) {
 
 string& HttpHeaderReader::get(const string &key) {
     return processedHeader[key]; 
-}
-
-HttpHeaderReader::~HttpHeaderReader() {
-    delete buffer; 
 }
