@@ -5,33 +5,32 @@
 
 using namespace std;
 
-HttpHeaderReader::HttpHeaderReader(int sck, unsigned bufSize) {
+HttpHeaderReader::HttpHeaderReader(int sck, unsigned int bufSize) {
     this->sck = sck;
     this->bufSize = bufSize;
-    currentLine = "";
+    buffer = new char[bufSize]();
+
+    processedLine = "";
     finishedReading = true;
 }
 
 void HttpHeaderReader::readHeader() {
-    char buf[bufSize];
-    bzero(buf, bufSize);
-
     finishedReading = false;
     
-    while(!finishedReading && (read(sck, buf, bufSize) > 0)) {
-        getLines(buf);
+    while(!finishedReading && (read(sck, buffer, bufSize) > 0)) {
+        processBuffer();
         checkIfFinished();
-        bzero(buf, bufSize);
+        bzero(buffer, bufSize);
     }
 }
 
-void HttpHeaderReader::getLines(char* buf) {
+void HttpHeaderReader::processBuffer() {
     unsigned i = 0;
-    while(i < bufSize && buf[i] != '\0') {
-        currentLine += buf[i];
-        if(buf[i] == '\n') {
-            headerLines.push_back(currentLine);
-            currentLine = "";
+    while(i < bufSize && buffer[i] != '\0') {
+        processedLine += buffer[i];
+        if(buffer[i] == '\n') {
+            headerLines.push_back(processedLine);
+            processedLine = "";
         }
         i++;
     }
@@ -41,7 +40,7 @@ void HttpHeaderReader::checkIfFinished() {
     if(headerLines.empty()) {
         return;
     }
-    if(!currentLine.empty()) {
+    if(!processedLine.empty()) {
         return;
     }
     string *lastLine = &(headerLines.back());
@@ -54,4 +53,8 @@ void HttpHeaderReader::checkIfFinished() {
     if(lastLineLength > 1 && lastLine->at(0) == '\r' && lastLine->at(1) == '\n') {
         finishedReading = true;
     }
+}
+
+HttpHeaderReader::~HttpHeaderReader() {
+    delete buffer; 
 }
