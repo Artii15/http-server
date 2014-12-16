@@ -1,24 +1,29 @@
 #include "HttpHeaderReader.h"
 #include <unistd.h>
+#include <ctype.h>
 #include <strings.h>
 #include <iostream>
 
 using namespace std;
 
-HttpHeaderReader::HttpHeaderReader(unsigned int bufSize) {
+HttpHeaderReader::HttpHeaderReader(const unsigned int bufSize) {
     this->bufSize = bufSize;
     buffer = new char[bufSize];
 }
 
-void HttpHeaderReader::readHeader(int sck) {
+void HttpHeaderReader::readHeader(const int sck) {
     bzero(buffer, bufSize);
     processedLine = "";
+    headerLines.clear();
+    processedHeader.clear();
 
     do {
         ssize_t bytesReceived = read(sck, buffer, bufSize);
         processBuffer();
         bzero(buffer, bytesReceived);
     } while(!headerReaded());
+    
+    mapHeader();
 }
 
 void HttpHeaderReader::processBuffer() {
@@ -48,6 +53,45 @@ bool HttpHeaderReader::headerReaded() {
         return true;
     }
     return false;
+}
+
+void HttpHeaderReader::mapHeader() {
+    if(headerLines.empty()) {
+        return;
+    }
+
+    list<string>::iterator lineIt = headerLines.begin();
+    mapFirstLine(*lineIt);
+
+    for(; lineIt != headerLines.end(); lineIt++) {
+        cout << *lineIt;
+    }
+}
+
+void HttpHeaderReader::mapFirstLine(const string &line) {
+    unsigned int i = 0; 
+    unsigned int lineLength = line.length();    
+
+    processedHeader["method"] = "";
+    while(i < lineLength && !isspace(line[i])) {
+        processedHeader["method"] += line[i++];
+    }
+    i++;
+    
+    processedHeader["route"] = "";
+    while(i < lineLength && !isspace(line[i])) {
+        processedHeader["route"] += line[i++];
+    }
+    i++;
+
+    processedHeader["protocol"] = "";
+    while(i < lineLength && !isspace(line[i])) {
+        processedHeader["protocol"] += line[i++];
+    }
+
+    cout << processedHeader["method"] << endl;
+    cout << processedHeader["route"] << endl;
+    cout << processedHeader["protocol"] << endl;
 }
 
 HttpHeaderReader::~HttpHeaderReader() {

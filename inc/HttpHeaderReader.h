@@ -2,6 +2,7 @@
 #define HTTP_HEADER_READER_H
 
 #include <list>
+#include <map>
 #include <string>
 
 using namespace std;
@@ -13,12 +14,15 @@ class HttpHeaderReader {
 
         string processedLine;
         list<string> headerLines; 
+        map<string, string> processedHeader;
 
         void processBuffer();
         bool headerReaded();
+        void mapHeader();
+        void mapFirstLine(const string &line);
     public:
-        HttpHeaderReader(unsigned int bufSize = 1024); 
-        void readHeader(int sck);
+        HttpHeaderReader(const unsigned int bufSize = 1024); 
+        void readHeader(const int sck);
 
         ~HttpHeaderReader();
 };
