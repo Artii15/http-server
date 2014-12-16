@@ -5,20 +5,18 @@
 
 using namespace std;
 
-HttpHeaderReader::HttpHeaderReader(int sck, unsigned int bufSize) {
-    this->sck = sck;
+HttpHeaderReader::HttpHeaderReader(unsigned int bufSize) {
     this->bufSize = bufSize;
     buffer = new char[bufSize];
 }
 
-void HttpHeaderReader::readHeader() {
+void HttpHeaderReader::readHeader(int sck) {
     bzero(buffer, bufSize);
     processedLine = "";
 
     do {
         ssize_t bytesReceived = read(sck, buffer, bufSize);
         processBuffer();
-        cout << buffer;
         bzero(buffer, bytesReceived);
     } while(!headerReaded());
 }

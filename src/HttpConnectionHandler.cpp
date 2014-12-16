@@ -4,11 +4,11 @@ using namespace std;
 
 HttpConnectionHandler::HttpConnectionHandler(int sck) 
 : ConnectionHandler(sck) {
-    reader = new HttpHeaderReader(sck);
+    reader = new HttpHeaderReader();
 }
 
 void HttpConnectionHandler::handleConnection() {
-    reader->readHeader();    
+    reader->readHeader(sck);    
 }
 
 HttpConnectionHandler::~HttpConnectionHandler() {

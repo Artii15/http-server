@@ -8,7 +8,6 @@ using namespace std;
 
 class HttpHeaderReader {
     private:
-        int sck;
         char* buffer;
         unsigned int bufSize;
 
@@ -18,8 +17,8 @@ class HttpHeaderReader {
         void processBuffer();
         bool headerReaded();
     public:
-        HttpHeaderReader(int sck, unsigned int bufSize = 1024); 
-        void readHeader();
+        HttpHeaderReader(unsigned int bufSize = 1024); 
+        void readHeader(int sck);
 
         ~HttpHeaderReader();
 };
