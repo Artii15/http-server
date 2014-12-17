@@ -5,12 +5,10 @@
 using namespace std;
 
 HttpConnectionHandler::HttpConnectionHandler(int sck) 
-: ConnectionHandler(sck) {
-    reader = new HttpHeaderReader();
-}
+: ConnectionHandler(sck) {}
 
 void HttpConnectionHandler::handleConnection() {
-    reader->readHeader(sck);    
+    reader.readHeader(sck);    
     
     const char* response = "HTTP/1.1 200 OK\r\n\r\nResponse-status: OK\r\n"; 
     
@@ -19,8 +17,4 @@ void HttpConnectionHandler::handleConnection() {
     for(; toSend > 0; toSend -= sent){
         sent = write(sck, response, toSend);
     }
-}
-
-HttpConnectionHandler::~HttpConnectionHandler() {
-    delete reader;
 }

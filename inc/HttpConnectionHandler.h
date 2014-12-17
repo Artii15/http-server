@@ -10,11 +10,10 @@ using namespace std;
 
 class HttpConnectionHandler: public ConnectionHandler {
     private:
-        HttpHeaderReader *reader;
+        HttpHeaderReader reader;
     public:
         HttpConnectionHandler(int sck);
         void handleConnection();
-        ~HttpConnectionHandler();
 };
 
 #endif

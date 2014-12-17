@@ -100,7 +100,6 @@ void* Server::handleConnection(void *arg) {
 
     ConnectionHandler* handler = context->connectionHandlerFactory(sck);
     handler->handleConnection();
-
     delete handler;
 
     return 0;
