@@ -1,5 +1,6 @@
 #include "HttpConnectionHandler.h"
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 
@@ -10,11 +11,14 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
 
 void HttpConnectionHandler::handleConnection() {
     reader->readHeader(sck);    
-
-    cout << reader->get("method") << endl;
-    cout << reader->get("route") << endl;
-    cout << reader->get("protocol") << endl;
-    cout << reader->get("User-Agent") << endl;
+    
+    const char* response = "HTTP/1.1 200 OK\r\n\r\nResponse-status: OK\r\n"; 
+    
+    size_t toSend = 40;
+    size_t sent = 0;
+    for(; toSend > 0; toSend -= sent){
+        sent = write(sck, response, toSend);
+    }
 }
 
 HttpConnectionHandler::~HttpConnectionHandler() {
