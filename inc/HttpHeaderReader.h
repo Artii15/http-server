@@ -2,7 +2,7 @@
 #define HTTP_HEADER_READER_H
 
 #include <list>
-#include <map>
+#include <tr1/unordered_map>
 #include <string>
 
 using namespace std;
@@ -14,7 +14,7 @@ class HttpHeaderReader {
 
         string processedLine;
         list<string> linesBuffer; 
-        map<string, string> processedHeader;
+        tr1::unordered_map<string, string> processedHeader;
 
         void processBuffer();
         bool headerReaded();
