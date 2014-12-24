@@ -3,6 +3,7 @@
 
 #include <string>
 #include <time.h>
+#include <boost/regex.hpp>
 
 class DateTime {
     public:
@@ -11,7 +12,7 @@ class DateTime {
         std::string getDate(); 
 
     private:
-        std::string knownFormats[3];
+        boost::regex acceptedFormats[3];
         time_t rawTime;
         struct tm *gmtTime;
         char formatedDate[80];
