@@ -1,8 +1,10 @@
 all: server
-server: obj/ConnectionHandler.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o
-	g++ obj/ConnectionHandler.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o -Wall -O3 -lpthread -o server
+server: obj/ConnectionHandler.o obj/DateTime.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o
+	g++ obj/ConnectionHandler.o obj/DateTime.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o -Wall -O3 -lpthread -o server
 obj/ConnectionHandler.o: src/ConnectionHandler.cpp inc/ConnectionHandler.h
 	g++ src/ConnectionHandler.cpp -o $@ -Wall -O3 -c -I inc
+obj/DateTime.o: src/DateTime.cpp inc/DateTime.h
+	g++ src/DateTime.cpp -o $@ -Wall -O3 -c -I inc
 obj/HttpConnectionHandler.o: src/HttpConnectionHandler.cpp inc/HttpConnectionHandler.h inc/ConnectionHandler.h inc/HttpHeaderReader.h
 	g++ src/HttpConnectionHandler.cpp -o $@ -Wall -O3 -c -I inc
 obj/HttpHeaderReader.o: src/HttpHeaderReader.cpp inc/HttpHeaderReader.h
