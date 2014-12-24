@@ -11,9 +11,12 @@ class DateTime {
         std::string getDate(); 
 
     private:
+        std::string knownFormats[3];
         time_t rawTime;
         struct tm *gmtTime;
         char formatedDate[80];
+
+        void initializeFormats();
 };
 
 
