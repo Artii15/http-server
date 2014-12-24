@@ -1,6 +1,6 @@
 all: server
 server: obj/ConnectionHandler.o obj/DateTime.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o
-	g++ obj/ConnectionHandler.o obj/DateTime.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o -Wall -O3 -lpthread -o server
+	g++ obj/ConnectionHandler.o obj/DateTime.o obj/HttpConnectionHandler.o obj/HttpHeaderReader.o obj/main.o obj/Server.o -Wall -O3 -lpthread -lboost_regex -o server
 obj/ConnectionHandler.o: src/ConnectionHandler.cpp inc/ConnectionHandler.h
 	g++ src/ConnectionHandler.cpp -o $@ -Wall -O3 -c -I inc
 obj/DateTime.o: src/DateTime.cpp inc/DateTime.h

@@ -27,7 +27,7 @@ void initialize() {
     try {
         server = new Server(SERVER_PORT, QUEUE_SIZE);
     }
-    catch(exception &ex) {
+    catch(std::exception &ex) {
         cout << ex.what() << endl; 
         exit(1);
     }
@@ -37,7 +37,7 @@ void startServer() {
     try {
         server->start();
     }
-    catch(exception &ex) {
+    catch(std::exception &ex) {
         cout << ex.what() << endl; 
         exit(1);
     }

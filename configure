@@ -3,7 +3,7 @@ IDIR=inc
 SDIR=src
 ODIR=obj
 CC=g++
-LFLAGS="-Wall -O3 -lpthread"
+LFLAGS="-Wall -O3 -lpthread -lboost_regex"
 CFLAGS="-Wall -O3 -c -I $IDIR"
 
 echo "all: server" > Makefile

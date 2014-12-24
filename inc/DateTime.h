@@ -9,6 +9,7 @@ using namespace std;
 class DateTime {
     public:
         DateTime();
+        DateTime(const string &date);
         string getDate(); 
 
     private:

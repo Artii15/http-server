@@ -2,10 +2,11 @@
 #define HTTP_HEADER_READER_H
 
 #include <list>
-#include <tr1/unordered_map>
+#include <boost/unordered_map.hpp>
 #include <string>
 
 using namespace std;
+using namespace boost;
 
 class HttpHeaderReader {
     private:
@@ -14,7 +15,7 @@ class HttpHeaderReader {
 
         string processedLine;
         list<string> linesBuffer; 
-        tr1::unordered_map<string, string> processedHeader;
+        unordered_map<string, string> processedHeader;
 
         void processBuffer();
         bool headerReaded();
