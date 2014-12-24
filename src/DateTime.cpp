@@ -19,10 +19,10 @@ DateTime::DateTime(const string &date) {
 
 void DateTime::initializeFormats() {
     knownFormats[0] = "^\\u\\l{2},\\s\\d{1,2}\\s\\u\\l{2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}\\sGMT$";
-    knownFormats[1] = "";
+    knownFormats[1] = "^\\u\\l+,\\s\\d{1,2}-\\u\\l{2}-\\d{2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}\\sGMT$";
     knownFormats[2] = "";
     
-    if(regex_match("Wed, 24 Dec 2014 14:42:1 GMT", regex(knownFormats[0]))) {
+    if(regex_match("Friday, 24-Dec-14 14:42:1 GMT", regex(knownFormats[1]))) {
         cout << "T" << endl;
     }
     else {
