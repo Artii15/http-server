@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <stdexcept>
 
+using namespace std;
+
 Server::Server(int port, int queueSize) {
     this->port = port;
     this->queueSize = queueSize;

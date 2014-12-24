@@ -5,8 +5,6 @@
 #include <pthread.h>
 #include "HttpConnectionHandler.h"
 
-using namespace std;
-
 class Server {
     private: 
         struct sockaddr_in stAddr;

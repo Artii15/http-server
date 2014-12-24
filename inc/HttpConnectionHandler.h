@@ -6,8 +6,6 @@
 #include <list>
 #include <string>
 
-using namespace std;
-
 class HttpConnectionHandler: public ConnectionHandler {
     private:
         HttpHeaderReader reader;

@@ -4,13 +4,11 @@
 #include <string>
 #include <time.h>
 
-using namespace std;
-
 class DateTime {
     public:
         DateTime();
-        DateTime(const string &date);
-        string getDate(); 
+        DateTime(const std::string &date);
+        std::string getDate(); 
 
     private:
         time_t rawTime;

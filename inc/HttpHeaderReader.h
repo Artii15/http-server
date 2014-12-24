@@ -5,27 +5,24 @@
 #include <boost/unordered_map.hpp>
 #include <string>
 
-using namespace std;
-using namespace boost;
-
 class HttpHeaderReader {
     private:
         char* buffer;
         unsigned int bufSize;
 
-        string processedLine;
-        list<string> linesBuffer; 
-        unordered_map<string, string> processedHeader;
+        std::string processedLine;
+        std::list<std::string> linesBuffer; 
+        boost::unordered_map<std::string, std::string> processedHeader;
 
         void processBuffer();
         bool headerReaded();
         void mapHeader();
-        void mapFirstLine(const string &line);
-        void mapAttributeLine(const string &line);
+        void mapFirstLine(const std::string &line);
+        void mapAttributeLine(const std::string &line);
     public:
         HttpHeaderReader(const unsigned int bufSize = 1024); 
         void readHeader(const int sck);
-        string& get(const string &key);
+        std::string& get(const std::string &key);
 };
 
 #endif
