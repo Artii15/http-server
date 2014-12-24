@@ -17,9 +17,9 @@ DateTime::DateTime(const string &date) {
 }
 
 void DateTime::initializeFormats() {
-    acceptedFormats[0] = regex("^\\u\\l{2},\\s\\d{1,2}\\s\\u\\l{2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}\\sGMT$");
-    acceptedFormats[1] = regex("^\\u\\l+,\\s\\d{1,2}-\\u\\l{2}-\\d{2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}\\sGMT$");
-    acceptedFormats[2] = regex("^\\u\\l{2}\\s\\u\\l{2}\\s\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}\\s\\d{4}$");
+    acceptedFormats[0] = regex("^(\\u\\l{2}),\\s(\\d{1,2})\\s(\\u\\l{2})\\s(\\d{4})\\s(\\d{1,2}):(\\d{1,2}):(\\d{1,2})\\sGMT$");
+    acceptedFormats[1] = regex("^(\\u\\l+),\\s(\\d{1,2})-(\\u\\l{2})-(\\d{2})\\s(\\d{1,2}):(\\d{1,2}):(\\d{1,2})\\sGMT$");
+    acceptedFormats[2] = regex("^(\\u\\l{2})\\s(\\u\\l{2})\\s(\\d{1,2})\\s(\\d{1,2}):(\\d{1,2}):(\\d{1,2})\\s(\\d{4})$");
     
     if(regex_match("Fri Dec 31 7:12:1 2014", acceptedFormats[2])) {
         cout << "T" << endl;
