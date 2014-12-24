@@ -2,11 +2,19 @@
 #define DATE_TIME_H
 
 #include <string>
+#include <time.h>
 
 using namespace std;
 
 class DateTime {
-    DateTime(const string &date);
+    public:
+        DateTime();
+        string getDate(); 
+
+    private:
+        time_t rawTime;
+        struct tm *gmtTime;
+        char formatedDate[80];
 };
 
 
