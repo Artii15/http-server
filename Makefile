@@ -5,7 +5,7 @@ obj/ConnectionHandler.o: src/ConnectionHandler.cpp inc/ConnectionHandler.h
 	g++ src/ConnectionHandler.cpp -o $@ -Wall -O3 -c -I inc
 obj/DateTime.o: src/DateTime.cpp inc/DateTime.h
 	g++ src/DateTime.cpp -o $@ -Wall -O3 -c -I inc
-obj/HttpConnectionHandler.o: src/HttpConnectionHandler.cpp inc/HttpConnectionHandler.h inc/ConnectionHandler.h inc/HttpHeaderReader.h
+obj/HttpConnectionHandler.o: src/HttpConnectionHandler.cpp inc/HttpConnectionHandler.h inc/ConnectionHandler.h inc/HttpHeaderReader.h inc/HttpException.h
 	g++ src/HttpConnectionHandler.cpp -o $@ -Wall -O3 -c -I inc
 obj/HttpException.o: src/HttpException.cpp inc/HttpException.h
 	g++ src/HttpException.cpp -o $@ -Wall -O3 -c -I inc

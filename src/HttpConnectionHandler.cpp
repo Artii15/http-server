@@ -1,4 +1,5 @@
 #include "HttpConnectionHandler.h"
+#include "HttpException.h"
 #include <iostream>
 #include <unistd.h>
 
@@ -18,7 +19,25 @@ void HttpConnectionHandler::readRequest() {
 }
 
 void HttpConnectionHandler::readProtocol(const string &protocol) {
-    
+    unsigned int protocolLen = protocol.length();
+    if(protocol.substr(0, 4) != "HTTP") {
+        throw HttpException(400, "Bad Request");
+    }
+
+    unsigned int i = 5;
+    string major = "";
+    while(i < protocolLen && protocol[i] != '.') {
+        major += protocol[i++];
+    }
+    i++;
+    if(major != "1") {
+        throw HttpException(501, "Not Implemented");
+    }
+
+    string minor = "";
+    while(i < protocolLen) {
+        minor += protocol[i++];
+    }
 }
 
 void HttpConnectionHandler::respond() {
