@@ -3,6 +3,7 @@
 
 #include "ConnectionHandler.h"
 #include "HttpHeaderReader.h"
+#include "HttpException.h"
 #include <list>
 #include <string>
 
@@ -16,6 +17,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         void verifyVersionMajor();
         void readVersionMinor();
         void respond();
+        void sendError(const HttpException &ex);
     public:
         HttpConnectionHandler(int sck);
         void handleConnection();

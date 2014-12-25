@@ -1,8 +1,8 @@
 #include "HttpConnectionHandler.h"
-#include "HttpException.h"
 #include <iostream>
 #include <unistd.h>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -12,8 +12,16 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
 }
 
 void HttpConnectionHandler::handleConnection() {
-    readRequest();
-    respond();
+    try {
+        readRequest();
+        respond();
+    }
+    catch(HttpException &ex) {
+        sendError(ex);
+    }
+    catch(exception &ex) {
+        throw HttpException(500, "Internal Server Error");  
+    }
 }
 
 void HttpConnectionHandler::readRequest() {
@@ -63,5 +71,9 @@ void HttpConnectionHandler::readVersionMinor() {
 }
 
 void HttpConnectionHandler::respond() {
+
+}
+
+void HttpConnectionHandler::sendError(const HttpException &ex) {
 
 }
