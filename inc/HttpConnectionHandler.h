@@ -12,9 +12,9 @@ class HttpConnectionHandler: public ConnectionHandler {
         unsigned int httpMinor;
 
         void readRequest();
-        void readProtocol();
         void verifyProtocolName();
-        void readHttpVersion();
+        void verifyVersionMajor();
+        void readVersionMinor();
         void respond();
     public:
         HttpConnectionHandler(int sck);

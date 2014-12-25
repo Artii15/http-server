@@ -2,7 +2,7 @@
 #include "HttpException.h"
 #include <iostream>
 #include <unistd.h>
-#include <stdlib.h>
+#include <sstream>
 
 using namespace std;
 
@@ -18,12 +18,9 @@ void HttpConnectionHandler::handleConnection() {
 
 void HttpConnectionHandler::readRequest() {
     reader.readHeader(sck);    
-    readProtocol();
-}
-
-void HttpConnectionHandler::readProtocol() {
     verifyProtocolName();
-    readHttpVersion();
+    verifyVersionMajor();
+    readVersionMinor();
 }
 
 void HttpConnectionHandler::verifyProtocolName() {
@@ -33,7 +30,7 @@ void HttpConnectionHandler::verifyProtocolName() {
     }
 }
 
-void HttpConnectionHandler::readHttpVersion() {
+void HttpConnectionHandler::verifyVersionMajor() {
     const string &protocol = reader.get("protocol");
     unsigned int protocolLen = protocol.length();
 
@@ -47,12 +44,22 @@ void HttpConnectionHandler::readHttpVersion() {
     if(major != "1") {
         throw HttpException(501, "Not Implemented");
     }
+}
+
+void HttpConnectionHandler::readVersionMinor() {
+    const string &protocol = reader.get("protocol");
+    unsigned int protocolLen = protocol.length();
 
     string minor = "";
-    while(i < protocolLen) {
-        minor += protocol[i++];
+    for(unsigned int i = 7; i < protocolLen; i++) {
+        minor += protocol[i];
     }
-    this->httpMinor = atoi(minor.c_str());
+    istringstream iss(minor);
+    iss >> this->httpMinor;
+
+    if(this->httpMinor < 0) {
+        throw HttpException(400, "Bad Request");
+    }
 }
 
 void HttpConnectionHandler::respond() {
