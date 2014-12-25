@@ -9,9 +9,12 @@
 class HttpConnectionHandler: public ConnectionHandler {
     private:
         HttpHeaderReader reader;
+        unsigned int httpMinor;
 
         void readRequest();
-        void readProtocol(const std::string &protocol);
+        void readProtocol();
+        void verifyProtocolName();
+        void readHttpVersion();
         void respond();
     public:
         HttpConnectionHandler(int sck);
