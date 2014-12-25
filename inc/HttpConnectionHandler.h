@@ -9,7 +9,7 @@
 class HttpConnectionHandler: public ConnectionHandler {
     private:
         HttpHeaderReader reader;
-        int httpMinor;
+        short httpMinor;
 
         void readRequest();
         void verifyProtocolName();
