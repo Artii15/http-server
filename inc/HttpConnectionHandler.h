@@ -9,6 +9,10 @@
 class HttpConnectionHandler: public ConnectionHandler {
     private:
         HttpHeaderReader reader;
+
+        void readRequest();
+        void readProtocol(const std::string &protocol);
+        void respond();
     public:
         HttpConnectionHandler(int sck);
         void handleConnection();
