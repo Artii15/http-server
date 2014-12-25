@@ -97,17 +97,27 @@ void HttpHeaderReader::mapFirstLine(const string &line) {
     unsigned int i = 0; 
     unsigned int lineLength = line.length();    
 
+    while(i < lineLength && isspace(line[i])) {
+        i++;
+    }
+
     processedHeader["method"] = "";
     while(i < lineLength && !isspace(line[i])) {
         processedHeader["method"] += line[i++];
     }
-    i++;
+
+    while(i < lineLength && isspace(line[i])) {
+        i++;
+    }
     
     processedHeader["route"] = "";
     while(i < lineLength && !isspace(line[i])) {
         processedHeader["route"] += line[i++];
     }
-    i++;
+
+    while(i < lineLength && isspace(line[i])) {
+        i++;
+    }
 
     processedHeader["protocol"] = "";
     while(i < lineLength && !isspace(line[i])) {
@@ -119,9 +129,13 @@ void HttpHeaderReader::mapAttributeLine(const string &line) {
     unsigned int i = 0;
     unsigned int lineLength = line.length();
 
+    while(i < lineLength && isspace(line[i])) {
+        i++;
+    }
+
     string key = "";
     while(i < lineLength && line[i] != ':' && !isspace(line[i])) {
-        key += line[i++];
+        key += (char)tolower(line[i++]);
     }
     i++;
 
@@ -130,8 +144,10 @@ void HttpHeaderReader::mapAttributeLine(const string &line) {
     }
     
     string value = "";
-    while(i < lineLength && line[i] != '\r' && line[i] != '\n') {
-        value += line[i++];
+    for(; i < lineLength; i++) {
+        if(line[i] != '\r' && line[i] != '\n') {
+            value += line[i++];
+        }
     }
 
     if(!key.empty() && !value.empty()) {
