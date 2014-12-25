@@ -55,6 +55,31 @@ bool HttpHeaderReader::headerReaded() {
     return false;
 }
 
+void HttpHeaderReader::mergeMultipleLinedHeaders() {
+    if(linesBuffer.empty()) {
+        return;
+    }
+
+    list<string>::iterator linesIt = linesBuffer.begin();
+    linesIt++;
+    
+    while(linesIt != linesBuffer.end()) {
+        string &line = *linesIt;
+        if(line[0] == ' ' || line[0] == '\t') {
+            linesIt--;
+            
+            string &continuedLine = *linesIt;
+            continuedLine += line;
+
+            linesIt++;
+            linesIt = linesBuffer.erase(linesIt);
+        }
+        else {
+            linesIt++;
+        }
+    }
+}
+
 void HttpHeaderReader::mapHeader() {
     if(linesBuffer.empty()) {
         return;
@@ -112,55 +137,6 @@ void HttpHeaderReader::mapAttributeLine(const string &line) {
     if(!key.empty() && !value.empty()) {
         processedHeader[key] = value;
     }
-}
-
-void HttpHeaderReader::mergeMultipleLinedHeaders() {
-    if(linesBuffer.empty()) {
-        return;
-    }
-
-    list<string>::iterator linesIt = linesBuffer.begin();
-    linesIt++;
-    
-    while(linesIt != linesBuffer.end()) {
-        string &line = *linesIt;
-        if(line[0] == ' ' || line[0] == '\t') {
-            linesIt--;
-
-            string &continuedLine = *linesIt;
-            ssize_t endLinePos = getHeaderEndPos(continuedLine);
-
-            if(endLinePos < 0) {
-                continuedLine += line;
-            }
-            else {
-                continuedLine = continuedLine.substr(0, endLinePos) + line;
-            }
-
-            linesIt++;
-            linesIt = linesBuffer.erase(linesIt);
-        }
-        else {
-            linesIt++;
-        }
-    }
-}
-
-ssize_t HttpHeaderReader::getHeaderEndPos(string &line) {
-    int endLinePos = line.length() - 1;
-
-    while(endLinePos >= 0) {
-        if(line[endLinePos] == '\n') {
-            break;
-        }
-        endLinePos--;
-    }
-
-    if(endLinePos > 0 && line[endLinePos - 1] == '\r') {
-        endLinePos--;
-    }
-
-    return endLinePos;
 }
 
 string& HttpHeaderReader::get(const string &key) {

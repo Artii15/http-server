@@ -16,11 +16,10 @@ class HttpHeaderReader {
 
         void processBuffer();
         bool headerReaded();
+        void mergeMultipleLinedHeaders();
         void mapHeader();
         void mapFirstLine(const std::string &line);
         void mapAttributeLine(const std::string &line);
-        void mergeMultipleLinedHeaders();
-        ssize_t getHeaderEndPos(std::string &line);
     public:
         HttpHeaderReader(const unsigned int bufSize = 1024); 
         void readHeader(const int sck);
