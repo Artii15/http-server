@@ -146,7 +146,7 @@ void HttpHeaderReader::mapAttributeLine(const string &line) {
     string value = "";
     for(; i < lineLength; i++) {
         if(line[i] != '\r' && line[i] != '\n') {
-            value += line[i++];
+            value += line[i];
         }
     }
 
