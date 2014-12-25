@@ -9,12 +9,4 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
 
 void HttpConnectionHandler::handleConnection() {
     reader.readHeader(sck);    
-    
-    const char* response = "HTTP/1.1 200 OK\r\n\r\nResponse-status: OK\r\n"; 
-    
-    size_t toSend = 40;
-    size_t sent = 0;
-    for(; toSend > 0; toSend -= sent){
-        sent = write(sck, response, toSend);
-    }
 }
