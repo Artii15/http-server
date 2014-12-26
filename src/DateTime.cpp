@@ -6,8 +6,8 @@ using namespace boost;
 
 DateTime::DateTime() {
     rawTime = time(NULL);  
-    gmtTime = gmtime(&rawTime);
-    strftime(formatedDate, sizeof(formatedDate), "%a, %d %b %Y %H:%M:%S GMT", gmtTime);
+    gmtime_r(&rawTime, &gmtTime);
+    strftime(formatedDate, sizeof(formatedDate), "%a, %d %b %Y %H:%M:%S GMT", &gmtTime);
 }
 
 DateTime::DateTime(const string &date) {
