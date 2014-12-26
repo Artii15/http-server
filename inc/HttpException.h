@@ -6,8 +6,8 @@
 class HttpException {
     public:
         HttpException(unsigned int code, const std::string &msg);
-        unsigned int getCode();
-        const std::string& getMessage();
+        unsigned int getCode() const;
+        const std::string& getMessage() const;
 
     private:
         unsigned int code;

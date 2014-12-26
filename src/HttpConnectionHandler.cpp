@@ -75,5 +75,5 @@ void HttpConnectionHandler::respond() {
 }
 
 void HttpConnectionHandler::sendError(const HttpException &ex) {
-
+    cout << ex.getCode() << " " << ex.getMessage() << endl;
 }

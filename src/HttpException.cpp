@@ -7,11 +7,11 @@ HttpException::HttpException(unsigned int code, const string &msg) {
     this->code = code;
 }
 
-unsigned int HttpException::getCode() {
+unsigned int HttpException::getCode() const {
     return code;
 }
 
-const string& HttpException::getMessage() {
+const string& HttpException::getMessage() const {
     return msg;
 }
 
