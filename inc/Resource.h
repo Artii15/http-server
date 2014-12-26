@@ -7,12 +7,14 @@
 class Resource {
     private:
         std::string path;
-        std::string fileType;
+        std::string type;
+        std::string extension;
         std::fstream file;
     public:
         Resource(const std::string& path);
         void openFile();
         void checkExtension();
+        void determineType();
         ~Resource();
 };
 
