@@ -17,7 +17,7 @@ Resource::Initializer::Initializer() {
 }
 
 Resource::Resource(const string& path) {
-    this->path = path;
+    this->path = path.substr(1);
     this->extension = "";
     this->size = -1;
 
