@@ -18,10 +18,11 @@ class Resource {
         static Initializer initializer;
         static boost::unordered_map<std::string, std::string> types;
 
-    public:
-        Resource(const std::string& path);
         void openFile();
         void checkExtension();
+
+    public:
+        Resource(const std::string& path);
         ~Resource();
 };
 
