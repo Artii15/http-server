@@ -22,7 +22,9 @@ class HttpConnectionHandler: public ConnectionHandler {
         void respond();
         void reportError(const HttpException &ex);
         void send();
+        void sendStatus();
         void sendHeaders();
+        void sendSeparator();
         void sendMessage();
     public:
         HttpConnectionHandler(int sck);

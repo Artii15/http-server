@@ -83,15 +83,15 @@ void HttpConnectionHandler::respond() {
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
     ostringstream ss;
-    ss << "HTTP/1." << httpMinor << " " << ex.getCode() << " " << ex.getMessage() << "\r\n";
+    ss << "HTTP/1." << httpMinor << " " << ex.getCode() << " " << ex.getMessage();
 
     statusLine = ss.str();
-    ss.clear();
+    ss.str("");
 
     ss << "<html><head></head><body><h1>" << ex.getCode() << " " << ex.getMessage() << "</h1></body></html>";
     message = ss.str();
 
-    ss.clear();
+    ss.str("");
     ss << message.length();
 
     responseHeaders["Content-Length"] = ss.str();
@@ -102,12 +102,47 @@ void HttpConnectionHandler::reportError(const HttpException &ex) {
 }
 
 void HttpConnectionHandler::send() {
+    sendStatus();
     sendHeaders();
+    sendSeparator();
     sendMessage();
 }
 
+void HttpConnectionHandler::sendStatus() {
+    statusLine += "\r\n";
+    size_t statusLen = statusLine.length();
+    unsigned int sent = 0;
+
+    for(unsigned int toSend = statusLen; toSend > 0; toSend -= sent) {
+        sent = write(sck, statusLine.c_str(), statusLen);
+    }
+}
+
 void HttpConnectionHandler::sendHeaders() {
-    
+    boost::unordered_map<string, string>::iterator headersIt = responseHeaders.begin();
+
+    for(; headersIt != responseHeaders.end(); headersIt++) {
+        ostringstream ss;
+        ss << headersIt->first << ": " << headersIt->second << "\r\n";
+
+        string header = ss.str();
+        size_t headerLen = header.length();
+        unsigned int sent = 0;
+
+        for(unsigned int toSend = headerLen; toSend > 0; toSend -= sent) {
+            sent = write(sck, header.c_str(), headerLen); 
+        }
+    }
+}
+
+void HttpConnectionHandler::sendSeparator() {
+    char separator[3] = "\r\n";
+    size_t sepLen = sizeof(separator) - 1;
+    unsigned int sent = 0;
+
+    for(unsigned int toSend = sepLen; toSend > 0; toSend -= sent) {
+        sent = write(sck, separator, sepLen);
+    }
 }
 
 void HttpConnectionHandler::sendMessage() {
