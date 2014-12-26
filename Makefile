@@ -13,7 +13,7 @@ obj/HttpHeaderReader.o: src/HttpHeaderReader.cpp inc/HttpHeaderReader.h
 	g++ src/HttpHeaderReader.cpp -o $@ -Wall -O3 -c -I inc
 obj/main.o: src/main.cpp inc/Server.h inc/HttpConnectionHandler.h inc/ConnectionHandler.h inc/HttpHeaderReader.h inc/HttpException.h
 	g++ src/main.cpp -o $@ -Wall -O3 -c -I inc
-obj/Resource.o: src/Resource.cpp inc/Resource.h
+obj/Resource.o: src/Resource.cpp inc/Resource.h inc/HttpException.h
 	g++ src/Resource.cpp -o $@ -Wall -O3 -c -I inc
 obj/Server.o: src/Server.cpp inc/Server.h inc/HttpConnectionHandler.h inc/ConnectionHandler.h inc/HttpHeaderReader.h inc/HttpException.h
 	g++ src/Server.cpp -o $@ -Wall -O3 -c -I inc
