@@ -1,5 +1,8 @@
 #include "Resource.h"
 #include "HttpException.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -16,6 +19,7 @@ Resource::Initializer::Initializer() {
 Resource::Resource(const string& path) {
     this->path = path;
     this->extension = "";
+    this->size = -1;
 
     openFile();
     checkExtension();
@@ -26,6 +30,12 @@ void Resource::openFile() {
     file.open(path.c_str(), ios::in | ios::binary);
     if(!file.good()) {
         throw HttpException(404, "Not Found");
+    }
+
+    struct stat st_buf;
+    stat(path.c_str(), &st_buf);
+    if(S_ISDIR(st_buf.st_mode)) {
+        throw HttpException(403, "Forbidden");
     }
 }
 
@@ -46,7 +56,7 @@ const string& Resource::getType() {
     return Resource::types[extension];
 }
 
-size_t Resource::getSize() {
+ssize_t Resource::getSize() {
     return size;
 }
 

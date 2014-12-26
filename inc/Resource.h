@@ -10,7 +10,7 @@ class Resource {
         std::string path;
         std::string extension;
         std::fstream file;
-        size_t size;
+        ssize_t size;
 
         friend struct initializer;
         struct Initializer {
@@ -26,7 +26,7 @@ class Resource {
     public:
         Resource(const std::string& path);
         const std::string& getType();
-        size_t getSize();
+        ssize_t getSize();
         ~Resource();
 };
 

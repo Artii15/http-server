@@ -1,7 +1,6 @@
 #include "HttpConnectionHandler.h"
 #include "Resource.h"
 #include "DateTime.h"
-#include <iostream>
 #include <unistd.h>
 #include <sstream>
 #include <stdexcept>
@@ -96,16 +95,15 @@ void HttpConnectionHandler::respond() {
 }
 
 void HttpConnectionHandler::performHead() {
-    Resource *res = new Resource(reader.get("url"));
+    Resource res(reader.get("url"));
 
-    message = "";
-    responseHeaders["Content-Type"] = res->getType();
+    responseHeaders["Content-Type"] = res.getType();
 
     ostringstream ss;
-    ss << res->getSize();
+    ss << res.getSize();
     responseHeaders["Content-Length"] = ss.str();
 
-    delete res;
+    message = "";
 
     send();
 }
