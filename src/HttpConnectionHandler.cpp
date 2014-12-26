@@ -1,4 +1,5 @@
 #include "HttpConnectionHandler.h"
+#include "Resource.h"
 #include "DateTime.h"
 #include <iostream>
 #include <unistd.h>
