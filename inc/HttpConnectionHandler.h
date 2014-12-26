@@ -15,6 +15,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         std::string statusLine;
         std::string message;
 
+        void setStandardHeaders();
         void readRequest();
         void verifyProtocolName();
         void verifyVersionMajor();

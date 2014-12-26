@@ -1,4 +1,5 @@
 #include "HttpConnectionHandler.h"
+#include "DateTime.h"
 #include <iostream>
 #include <unistd.h>
 #include <sstream>
@@ -11,6 +12,14 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     httpMinor = 1; 
     statusLine = "";
     message = "";
+
+    setStandardHeaders();
+}
+
+void HttpConnectionHandler::setStandardHeaders() {
+    DateTime date;
+    responseHeaders["Date"] = date.getDate();
+    responseHeaders["Server"] = "Xperimental";
 }
 
 void HttpConnectionHandler::handleConnection() {
