@@ -7,6 +7,9 @@ boost::unordered_map<string, string> Resource::types;
 
 Resource::Initializer::Initializer() {
     Resource::types["html"] = "text/html"; 
+    Resource::types["css"] = "text/css"; 
+    Resource::types["js"] = "application/javascript"; 
+    Resource::types["jpg"] = "image/jpeg"; 
 }
 
 Resource::Resource(const string& path) {
@@ -16,7 +19,6 @@ Resource::Resource(const string& path) {
 
     openFile();
     checkExtension();
-    determineType();
 }
 
 void Resource::openFile() {
@@ -30,20 +32,6 @@ void Resource::checkExtension() {
     unsigned int dotPos = path.find_last_of('.');
     if(dotPos != string::npos) {
         extension = path.substr(dotPos + 1);
-    }
-}
-
-void Resource::determineType() {
-    boost::unordered_map<string, string> types;
-
-    types["html"] = "text/html";
-    const string& type = types[extension];
-    
-    if(type.empty()) {
-        this->type = "text/plain";
-    }
-    else {
-        this->type = type;
     }
 }
 

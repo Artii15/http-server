@@ -23,7 +23,6 @@ class Resource {
         Resource(const std::string& path);
         void openFile();
         void checkExtension();
-        void determineType();
         ~Resource();
 };
 
