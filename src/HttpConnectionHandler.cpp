@@ -97,11 +97,17 @@ void HttpConnectionHandler::respond() {
 void HttpConnectionHandler::performHead() {
     Resource res(reader.get("url"));
 
-    responseHeaders["Content-Type"] = res.getType();
+    const string& type = res.getType();
+    if(type != "") {
+        responseHeaders["Content-Type"] = type;
+    }
 
-    ostringstream ss;
-    ss << res.getSize();
-    responseHeaders["Content-Length"] = ss.str();
+    ssize_t size = res.getSize();
+    if(size >= 0) {
+        ostringstream ss;
+        ss << size;
+        responseHeaders["Content-Length"] = ss.str();
+    }
 
     message = "";
 
