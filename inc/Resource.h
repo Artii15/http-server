@@ -8,7 +8,6 @@
 class Resource {
     private:
         std::string path;
-        std::string type;
         std::string extension;
         std::fstream file;
 

@@ -10,11 +10,11 @@ Resource::Initializer::Initializer() {
     Resource::types["css"] = "text/css"; 
     Resource::types["js"] = "application/javascript"; 
     Resource::types["jpg"] = "image/jpeg"; 
+    Resource::types["txt"] = "text/plain"; 
 }
 
 Resource::Resource(const string& path) {
     this->path = path;
-    this->type = "";
     this->extension = "";
 
     openFile();
