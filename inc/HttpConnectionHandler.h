@@ -4,20 +4,26 @@
 #include "ConnectionHandler.h"
 #include "HttpHeaderReader.h"
 #include "HttpException.h"
-#include <list>
 #include <string>
+#include <boost/unordered_map.hpp>
 
 class HttpConnectionHandler: public ConnectionHandler {
     private:
         HttpHeaderReader reader;
         short httpMinor;
+        boost::unordered_map<std::string, std::string> responseHeaders;
+        std::string statusLine;
+        std::string message;
 
         void readRequest();
         void verifyProtocolName();
         void verifyVersionMajor();
         void readVersionMinor();
         void respond();
-        void sendError(const HttpException &ex);
+        void reportError(const HttpException &ex);
+        void send();
+        void sendHeaders();
+        void sendMessage();
     public:
         HttpConnectionHandler(int sck);
         void handleConnection();

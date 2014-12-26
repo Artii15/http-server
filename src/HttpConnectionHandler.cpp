@@ -9,6 +9,8 @@ using namespace std;
 HttpConnectionHandler::HttpConnectionHandler(int sck) 
 : ConnectionHandler(sck) {
     httpMinor = 1; 
+    statusLine = "";
+    message = "";
 }
 
 void HttpConnectionHandler::handleConnection() {
@@ -17,7 +19,7 @@ void HttpConnectionHandler::handleConnection() {
         respond();
     }
     catch(HttpException &ex) {
-        sendError(ex);
+        reportError(ex);
     }
     catch(exception &ex) {
         throw HttpException(500, "Internal Server Error");  
@@ -71,9 +73,33 @@ void HttpConnectionHandler::readVersionMinor() {
 }
 
 void HttpConnectionHandler::respond() {
+    /*
+    prepareResource(); 
+    sendHeaders();
+    if(reader.get("method") == "GET") {
+        sendResource();
+    }*/
+}
+
+void HttpConnectionHandler::reportError(const HttpException &ex) {
+    ostringstream ss;
+    ss << "HTTP/1." << httpMinor << " " << ex.getCode() << " " << ex.getMessage() << "\r\n";
+
+    statusLine = ss.str();
+    responseHeaders["connection"] = "close\r\n";
+
+    send();
+}
+
+void HttpConnectionHandler::send() {
+    sendHeaders();
+    sendMessage();
+}
+
+void HttpConnectionHandler::sendHeaders() {
 
 }
 
-void HttpConnectionHandler::sendError(const HttpException &ex) {
-    cout << ex.getCode() << " " << ex.getMessage() << endl;
+void HttpConnectionHandler::sendMessage() {
+
 }
