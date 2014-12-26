@@ -19,6 +19,7 @@ Resource::Resource(const string& path) {
 
     openFile();
     checkExtension();
+    checkSize();
 }
 
 void Resource::openFile() {
@@ -33,6 +34,16 @@ void Resource::checkExtension() {
     if(dotPos != string::npos) {
         extension = path.substr(dotPos + 1);
     }
+}
+
+void Resource::checkSize() {
+    file.seekg(0, ios::end);
+    size = file.tellg();
+    file.seekg(0, ios::beg);
+}
+
+const string& Resource::getResourceType() {
+    return Resource::types[extension];
 }
 
 Resource::~Resource() {

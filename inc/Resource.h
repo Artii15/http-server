@@ -10,6 +10,7 @@ class Resource {
         std::string path;
         std::string extension;
         std::fstream file;
+        size_t size;
 
         friend struct initializer;
         struct Initializer {
@@ -20,9 +21,11 @@ class Resource {
 
         void openFile();
         void checkExtension();
+        void checkSize();
 
     public:
         Resource(const std::string& path);
+        const std::string& getResourceType();
         ~Resource();
 };
 
