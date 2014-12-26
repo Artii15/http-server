@@ -1,9 +1,10 @@
 #include "HttpConnectionHandler.h"
-#include "Resource.h"
 #include "DateTime.h"
 #include <unistd.h>
 #include <sstream>
 #include <stdexcept>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     httpMinor = 1; 
     statusLine = "";
     message = "";
+    res = NULL;
 
     setStandardHeaders();
 }
@@ -83,11 +85,16 @@ void HttpConnectionHandler::readVersionMinor() {
 
 void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
+
     if(method == "HEAD") {
+        res = new Resource(reader.get("url"));
         performHead();
+        delete res;
     }
     else if(method == "GET") {
+        res = new Resource(reader.get("url"));
         performGet();
+        delete res;
     }
     else {
         throw HttpException(501, "Not Implemented");
@@ -97,19 +104,17 @@ void HttpConnectionHandler::respond() {
 }
 
 void HttpConnectionHandler::performHead() {
-    Resource res(reader.get("url"));
-
     ostringstream ss;
     ss << "HTTP/1." << httpMinor << " 200 OK";
     statusLine = ss.str();
     ss.str("");
     
-    const string& type = res.getType();
+    const string& type = res->getType();
     if(type != "") {
         responseHeaders["Content-Type"] = type;
     }
 
-    ssize_t size = res.getSize();
+    ssize_t size = res->getSize();
     if(size >= 0) {
         ss << size;
         responseHeaders["Content-Length"] = ss.str();
@@ -120,6 +125,17 @@ void HttpConnectionHandler::performHead() {
 
 void HttpConnectionHandler::performGet() {
     performHead();
+    
+    fstream &file = res->getResource();
+    file.seekg(0, ios::beg);
+
+    unsigned int toSend = res->getSize();
+    char *buf = new char[toSend];
+    file.read(buf, toSend);
+
+    message = string(buf);
+
+    delete buf;
 }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {

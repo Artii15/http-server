@@ -35,6 +35,7 @@ void Resource::openFile() {
     struct stat st_buf;
     stat(path.c_str(), &st_buf);
     if(S_ISDIR(st_buf.st_mode)) {
+        file.close();
         throw HttpException(403, "Forbidden");
     }
 }
@@ -58,6 +59,10 @@ const string& Resource::getType() {
 
 ssize_t Resource::getSize() {
     return size;
+}
+
+fstream& Resource::getResource() {
+    return file;
 }
 
 Resource::~Resource() {

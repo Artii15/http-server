@@ -27,6 +27,7 @@ class Resource {
         Resource(const std::string& path);
         const std::string& getType();
         ssize_t getSize();
+        std::fstream& getResource();
         ~Resource();
 };
 
