@@ -25,7 +25,8 @@ class Resource {
 
     public:
         Resource(const std::string& path);
-        const std::string& getResourceType();
+        const std::string& getType();
+        size_t getSize();
         ~Resource();
 };
 

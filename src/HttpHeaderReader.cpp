@@ -110,9 +110,9 @@ void HttpHeaderReader::mapFirstLine(const string &line) {
         i++;
     }
     
-    processedHeader["route"] = "";
+    processedHeader["url"] = "";
     while(i < lineLength && !isspace(line[i])) {
-        processedHeader["route"] += line[i++];
+        processedHeader["url"] += line[i++];
     }
 
     while(i < lineLength && isspace(line[i])) {

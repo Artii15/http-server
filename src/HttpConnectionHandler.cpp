@@ -96,7 +96,18 @@ void HttpConnectionHandler::respond() {
 }
 
 void HttpConnectionHandler::performHead() {
+    Resource *res = new Resource(reader.get("url"));
 
+    message = "";
+    responseHeaders["Content-Type"] = res->getType();
+
+    ostringstream ss;
+    ss << res->getSize();
+    responseHeaders["Content-Length"] = ss.str();
+
+    delete res;
+
+    send();
 }
 
 void HttpConnectionHandler::performGet() {

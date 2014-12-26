@@ -42,8 +42,12 @@ void Resource::checkSize() {
     file.seekg(0, ios::beg);
 }
 
-const string& Resource::getResourceType() {
+const string& Resource::getType() {
     return Resource::types[extension];
+}
+
+size_t Resource::getSize() {
+    return size;
 }
 
 Resource::~Resource() {
