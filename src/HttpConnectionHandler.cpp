@@ -92,6 +92,8 @@ void HttpConnectionHandler::respond() {
     else {
         throw HttpException(501, "Not Implemented");
     }
+
+    send();
 }
 
 void HttpConnectionHandler::performHead() {
@@ -99,6 +101,7 @@ void HttpConnectionHandler::performHead() {
 
     ostringstream ss;
     ss << "HTTP/1." << httpMinor << " 200 OK";
+    statusLine = ss.str();
     ss.str("");
     
     const string& type = res.getType();
@@ -113,8 +116,6 @@ void HttpConnectionHandler::performHead() {
     }
 
     message = "";
-
-    send();
 }
 
 void HttpConnectionHandler::performGet() {
