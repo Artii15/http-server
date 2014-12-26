@@ -83,12 +83,24 @@ void HttpConnectionHandler::readVersionMinor() {
 }
 
 void HttpConnectionHandler::respond() {
-    /*
-    prepareResource(); 
-    sendHeaders();
-    if(reader.get("method") == "GET") {
-        sendResource();
-    }*/
+    const string& method = reader.get("method");
+    if(method == "HEAD") {
+        performHead();
+    }
+    else if(method == "GET") {
+        performGet();
+    }
+    else {
+        throw HttpException(501, "Not Implemented");
+    }
+}
+
+void HttpConnectionHandler::performHead() {
+
+}
+
+void HttpConnectionHandler::performGet() {
+    performHead();
 }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {

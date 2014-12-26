@@ -20,8 +20,12 @@ class HttpConnectionHandler: public ConnectionHandler {
         void verifyProtocolName();
         void verifyVersionMajor();
         void readVersionMinor();
+
         void respond();
+        void performHead();
+        void performGet();
         void reportError(const HttpException &ex);
+
         void send();
         void sendStatus();
         void sendHeaders();
