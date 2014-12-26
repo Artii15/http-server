@@ -1,8 +1,13 @@
 #include "Resource.h"
 #include "HttpException.h"
-#include <boost/unordered_map.hpp>
 
 using namespace std;
+
+boost::unordered_map<string, string> Resource::types;
+
+Resource::Initializer::Initializer() {
+    Resource::types["html"] = "text/html"; 
+}
 
 Resource::Resource(const string& path) {
     this->path = path;
