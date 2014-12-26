@@ -11,6 +11,8 @@ class Resource {
         std::fstream file;
     public:
         Resource(const std::string& path);
+        void openFile();
+        void checkExtension();
         ~Resource();
 };
 
