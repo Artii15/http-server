@@ -107,9 +107,14 @@ void HttpConnectionHandler::send() {
 }
 
 void HttpConnectionHandler::sendHeaders() {
-
+    
 }
 
 void HttpConnectionHandler::sendMessage() {
+    size_t messageLen = message.length();
+    unsigned int sent = 0;
 
+    for(unsigned int toSend = messageLen; toSend > 0; toSend -= sent) {
+        sent = write(sck, message.c_str(), messageLen);
+    }
 }
