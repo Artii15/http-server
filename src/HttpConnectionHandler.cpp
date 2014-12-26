@@ -86,7 +86,17 @@ void HttpConnectionHandler::reportError(const HttpException &ex) {
     ss << "HTTP/1." << httpMinor << " " << ex.getCode() << " " << ex.getMessage() << "\r\n";
 
     statusLine = ss.str();
-    responseHeaders["connection"] = "close\r\n";
+    ss.clear();
+
+    ss << "<html><head></head><body><h1>" << ex.getCode() << " " << ex.getMessage() << "</h1></body></html>";
+    message = ss.str();
+
+    ss.clear();
+    ss << message.length();
+
+    responseHeaders["Content-Length"] = ss.str();
+    responseHeaders["Content-Type"] = "text/html";
+    responseHeaders["Connection"] = "close";
 
     send();
 }
