@@ -78,9 +78,13 @@ void HttpConnectionHandler::readVersionMinor() {
         minor += protocol[i];
     }
     istringstream iss(minor);
-    iss >> this->httpMinor;
+    iss >> httpMinor;
 
-    if(this->httpMinor < 0) {
+    if(httpMinor < 0) {
+        throw HttpException(400, "Bad Request");
+    }
+
+    if(httpMinor == 1 && reader.get("host") == "") {
         throw HttpException(400, "Bad Request");
     }
 
