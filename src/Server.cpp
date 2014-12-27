@@ -1,24 +1,33 @@
 #include "Server.h"
+#include "Config.h"
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdexcept>
+#include <sstream>
 
 using namespace std;
 
-Server::Server(int port, int queueSize) {
-    this->port = port;
-    this->queueSize = queueSize;
-    initialize();
-}
-
-void Server::initialize() {
+Server::Server() {
+    readSettings();
     configureConnectionHandler();
     configureMutex();
     configureAddr();
     configureSocket();
+}
+
+void Server::readSettings() {
+    Config &config = Config::instance();
+
+    service = config.get("settings", "service");
+
+    istringstream ss(config.get("settings", "port"));
+    ss >> port;
+
+    ss.str(config.get("settings", "queue_size"));
+    ss >> queueSize;
 }
 
 void Server::configureMutex() {
@@ -28,13 +37,11 @@ void Server::configureMutex() {
 }
 
 void Server::configureConnectionHandler() {
-    switch(port) {
-        case 80:
-            connectionHandlerFactory = &Server::setHttpConnectionHandler;
-            break;
-        default:
-            throw runtime_error("Not supported service");
-            break;
+    if(service == "http") {
+        connectionHandlerFactory = &Server::setHttpConnectionHandler;
+    }
+    else {
+        throw runtime_error("Not supported service");
     }
 }
 

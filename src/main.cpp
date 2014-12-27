@@ -5,35 +5,22 @@
 #include <iostream>
 #include <stdexcept>
 
-#define SERVER_PORT 80
-#define QUEUE_SIZE 10
-
 using namespace std;
 
 Server *server = NULL;
 
-void initialize();
 void loadConfig();
+void initialize();
 void startServer();
 void stopServer(int signum);
 
 int main() {
-    initialize();
     loadConfig();
+    initialize();
     signal(SIGINT, stopServer);
     startServer();
 
     exit(0);
-}
-
-void initialize() {
-    try {
-        server = new Server(SERVER_PORT, QUEUE_SIZE);
-    }
-    catch(exception &ex) {
-        cout << ex.what() << endl; 
-        exit(1);
-    }
 }
 
 void loadConfig() {
@@ -41,13 +28,24 @@ void loadConfig() {
         Config &config = Config::instance();
         config.load("config/domains", "domains");
         config.load("config/types", "types");
+        config.load("config/settings", "settings");
     }
     catch(exception &ex) {
         cout << ex.what() << endl; 
-        delete server;
         exit(1);
     }
 }
+
+void initialize() {
+    try {
+        server = new Server();
+    }
+    catch(exception &ex) {
+        cout << ex.what() << endl; 
+        exit(1);
+    }
+}
+
 
 void startServer() {
     try {
