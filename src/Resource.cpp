@@ -14,11 +14,23 @@ Resource::Resource(const string& baseDir, const string& path) {
     this->extension = "";
     this->size = -1;
 
+    normalizePath();
     validatePath();
     makeFullPath();
     openFile();
     checkExtension();
     checkSize();
+}
+
+void Resource::normalizePath() {
+    unsigned int pathLen = path.length();
+
+    if(pathLen == 1 && path[0] != '/') {
+        path = "";
+    }
+    else if(pathLen > 1 && path[0] == '/') {
+        path = path.substr(1);
+    }
 }
 
 void Resource::validatePath() {
@@ -48,15 +60,7 @@ void Resource::makeFullPath() {
         fullPath += '/';
     }
     
-    unsigned int pathLen = path.length();
-
-    if(pathLen == 1 && path[0] != '/') {
-        fullPath += path;
-    }
-        
-    if(pathLen > 1 && path[0] == '/') {
-        fullPath += path.substr(1);
-    }
+    fullPath += path;
 }
 
 void Resource::openFile() {

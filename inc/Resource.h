@@ -13,6 +13,7 @@ class Resource {
         std::fstream file;
         ssize_t size;
 
+        void normalizePath();
         void validatePath();
         void makeFullPath();
         void openFile();
