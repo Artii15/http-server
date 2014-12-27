@@ -12,7 +12,7 @@ class Config {
         Config();
 
     public:
-        static Config& factory();
+        static Config& instance();
         void load(const std::string& path, const std::string& outerKey);
         const std::string& get(const std::string& outerKey, const std::string& innerKey);
 };

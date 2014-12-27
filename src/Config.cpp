@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Config& Config::factory() {
+Config& Config::instance() {
     static Config instance;
     
     return instance;

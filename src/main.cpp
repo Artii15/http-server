@@ -38,7 +38,7 @@ void initialize() {
 
 void loadConfig() {
     try {
-        Config config = Config::factory();
+        Config config = Config::instance();
         config.load("config/domains", "domains");
         config.load("config/types", "types");
     }
