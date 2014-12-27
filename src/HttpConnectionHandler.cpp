@@ -86,14 +86,14 @@ void HttpConnectionHandler::readVersionMinor() {
 void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
 
-    if(method == "HEAD") {
-        res = new Resource(reader.get("url"));
-        performHead();
-        delete res;
-    }
-    else if(method == "GET") {
+    if(method == "GET") {
         res = new Resource(reader.get("url"));
         performGet();
+        delete res;
+    }
+    else if(method == "HEAD") {
+        res = new Resource(reader.get("url"));
+        performHead();
         delete res;
     }
     else {
@@ -101,6 +101,17 @@ void HttpConnectionHandler::respond() {
     }
 
     send();
+}
+
+void HttpConnectionHandler::performGet() {
+    performHead();
+    
+    fstream &file = res->getResource();
+    file.seekg(0, ios::beg);
+
+    size_t messageSize = res->getSize();
+    message.resize(messageSize);
+    file.read(&message[0], messageSize);
 }
 
 void HttpConnectionHandler::performHead() {
@@ -121,17 +132,6 @@ void HttpConnectionHandler::performHead() {
     }
 
     message = "";
-}
-
-void HttpConnectionHandler::performGet() {
-    performHead();
-    
-    fstream &file = res->getResource();
-    file.seekg(0, ios::beg);
-
-    size_t messageSize = res->getSize();
-    message.resize(messageSize);
-    file.read(&message[0], messageSize);
 }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
