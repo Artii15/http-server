@@ -19,3 +19,5 @@ done
 
 echo "clean:" >> Makefile
 echo -e "\t""rm -f $ODIR/*" >> Makefile
+
+mkdir -p obj
