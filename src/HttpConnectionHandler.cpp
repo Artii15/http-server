@@ -36,7 +36,8 @@ void HttpConnectionHandler::handleConnection() {
         reportError(ex);
     }
     catch(exception &ex) {
-        throw HttpException(500, "Internal Server Error");  
+        HttpException criticalEx(500, "Internal Server Error");
+        reportError(criticalEx);
     }
 }
 

@@ -8,11 +8,13 @@ class Resource {
     private:
         std::string baseDir;
         std::string path;
+        std::string fullPath;
         std::string extension;
         std::fstream file;
         ssize_t size;
 
         void validatePath();
+        void makeFullPath();
         void openFile();
         void checkExtension();
         void checkSize();

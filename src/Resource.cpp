@@ -15,6 +15,7 @@ Resource::Resource(const string& baseDir, const string& path) {
     this->size = -1;
 
     validatePath();
+    makeFullPath();
     openFile();
     checkExtension();
     checkSize();
@@ -41,8 +42,26 @@ void Resource::validatePath() {
     }
 }
 
+void Resource::makeFullPath() {
+    fullPath = "";
+    if(!baseDir.empty()) {
+        fullPath += baseDir.substr(0, baseDir.rfind('/'));
+        fullPath += '/';
+    }
+    
+    unsigned int pathLen = path.length();
+
+    if(pathLen == 1 && path[0] != '/') {
+        fullPath += path;
+    }
+        
+    if(pathLen > 1 && path[0] == '/') {
+        fullPath += path.substr(1);
+    }
+}
+
 void Resource::openFile() {
-    file.open(path.c_str(), ios::in | ios::binary);
+    file.open(fullPath.c_str(), ios::in | ios::binary);
     if(!file.good()) {
         throw HttpException(404, "Not Found");
     }
