@@ -107,12 +107,12 @@ void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
 
     if(method == "GET") {
-        res = new Resource(reader.get("url"));
+        res = new Resource(host, reader.get("url"));
         performGet();
         delete res;
     }
     else if(method == "HEAD") {
-        res = new Resource(reader.get("url"));
+        res = new Resource(host, reader.get("url"));
         performHead();
         delete res;
     }

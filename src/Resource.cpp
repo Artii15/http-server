@@ -4,17 +4,41 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sstream>
 
 using namespace std;
 
-Resource::Resource(const string& path) {
-    this->path = path.substr(1);
+Resource::Resource(const string& baseDir, const string& path) {
+    this->baseDir = baseDir;
+    this->path = path;
     this->extension = "";
     this->size = -1;
 
+    validatePath();
     openFile();
     checkExtension();
     checkSize();
+}
+
+void Resource::validatePath() {
+    stringstream ss(path);
+    string segment;
+
+    int guard = 0;
+    while(getline(ss, segment, '/')) {
+        if(segment.empty()) {
+            continue;
+        }
+        if(segment == "..") {
+            guard--;
+        }
+        else {
+            guard++;
+        }
+        if(guard < 0) {
+            throw HttpException(403, "Forbiden");
+        }
+    }
 }
 
 void Resource::openFile() {
