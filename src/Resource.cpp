@@ -43,9 +43,8 @@ void Resource::validatePath() {
 }
 
 void Resource::makeFullPath() {
-    fullPath = "";
-    if(!baseDir.empty()) {
-        fullPath += baseDir.substr(0, baseDir.rfind('/'));
+    fullPath = baseDir;
+    if(!fullPath.empty() && fullPath[fullPath.length() - 1] != '/') {
         fullPath += '/';
     }
     

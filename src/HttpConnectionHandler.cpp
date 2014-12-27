@@ -46,6 +46,7 @@ void HttpConnectionHandler::readRequest() {
     verifyProtocolName();
     verifyVersionMajor();
     readVersionMinor();
+    normalizeHostHeader();
 }
 
 void HttpConnectionHandler::verifyProtocolName() {
@@ -101,6 +102,9 @@ void HttpConnectionHandler::normalizeHostHeader() {
         if(colonPos != string::npos) {
             this->host = requestedHost.substr(0, colonPos);
         }
+        else {
+            this->host = requestedHost;
+        }
     }
 }
 
@@ -108,12 +112,12 @@ void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
 
     if(method == "GET") {
-        res = new Resource(host, reader.get("url"));
+        res = new Resource(config->get("domains", host), reader.get("url"));
         performGet();
         delete res;
     }
     else if(method == "HEAD") {
-        res = new Resource(host, reader.get("url"));
+        res = new Resource(config->get("domains", host), reader.get("url"));
         performHead();
         delete res;
     }
