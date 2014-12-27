@@ -16,6 +16,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         boost::unordered_map<std::string, std::string> responseHeaders;
         std::string statusLine;
         std::string message;
+        std::string host;
         Resource *res;
         Config *config;
 
@@ -24,6 +25,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         void verifyProtocolName();
         void verifyVersionMajor();
         void readVersionMinor();
+        void normalizeHostHeader();
 
         void respond();
         void performHead();

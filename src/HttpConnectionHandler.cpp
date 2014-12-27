@@ -14,6 +14,7 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     httpMinor = 1; 
     statusLine = "";
     message = "";
+    host = "";
     res = NULL;
     config = &Config::instance();
 
@@ -87,9 +88,18 @@ void HttpConnectionHandler::readVersionMinor() {
     if(httpMinor == 1 && reader.get("host") == "") {
         throw HttpException(400, "Bad Request");
     }
+}
 
-    if(this->httpMinor > 1) {
-        this->httpMinor = 1;
+void HttpConnectionHandler::normalizeHostHeader() {
+    const string &requestedHost = reader.get("host");
+    if(requestedHost.empty()) {
+        this->host = "default";
+    }
+    else {
+        unsigned int colonPos = requestedHost.find(':');
+        if(colonPos != string::npos) {
+            this->host = requestedHost.substr(0, colonPos);
+        }
     }
 }
 
