@@ -129,13 +129,9 @@ void HttpConnectionHandler::performGet() {
     fstream &file = res->getResource();
     file.seekg(0, ios::beg);
 
-    unsigned int toSend = res->getSize();
-    char *buf = new char[toSend];
-    file.read(buf, toSend);
-
-    message = string(buf);
-
-    delete buf;
+    size_t messageSize = res->getSize();
+    message.resize(messageSize);
+    file.read(&message[0], messageSize);
 }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
