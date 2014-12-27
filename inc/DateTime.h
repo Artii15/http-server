@@ -6,12 +6,6 @@
 #include <boost/regex.hpp>
 
 class DateTime {
-    public:
-        DateTime();
-        DateTime(const std::string &date);
-        DateTime(const struct tm& clock);
-        std::string getDate(); 
-
     private:
         boost::regex acceptedFormats[3];
         time_t rawTime;
@@ -19,6 +13,14 @@ class DateTime {
         char formatedDate[80];
 
         void initializeFormats();
+
+    public:
+        DateTime();
+        DateTime(const std::string &date);
+        DateTime(const struct tm& clock);
+        std::string getDate() const;
+        bool operator==(const DateTime& date) const;
+        bool operator>(const DateTime& date) const;
 };
 
 

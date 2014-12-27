@@ -26,6 +26,14 @@ void DateTime::initializeFormats() {
     acceptedFormats[2] = regex("^(\\u\\l{2})\\s(\\u\\l{2})\\s(\\d{1,2})\\s(\\d{1,2}):(\\d{1,2}):(\\d{1,2})\\s(\\d{4})$");
 }
 
-string DateTime::getDate() {
+string DateTime::getDate() const {
     return formatedDate;
+}
+
+bool DateTime::operator==(const DateTime& date) const {
+    return this->rawTime == date.rawTime; 
+}
+
+bool DateTime::operator>(const DateTime& date) const {
+    return this->rawTime > date.rawTime;
 }
