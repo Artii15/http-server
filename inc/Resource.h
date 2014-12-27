@@ -3,7 +3,6 @@
 
 #include <string>
 #include <fstream>
-#include <boost/unordered_map.hpp>
 
 class Resource {
     private:
@@ -11,13 +10,6 @@ class Resource {
         std::string extension;
         std::fstream file;
         ssize_t size;
-
-        friend struct initializer;
-        struct Initializer {
-            Initializer();
-        };
-        static Initializer initializer;
-        static boost::unordered_map<std::string, std::string> types;
 
         void openFile();
         void checkExtension();

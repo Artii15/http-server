@@ -1,20 +1,11 @@
 #include "Resource.h"
 #include "HttpException.h"
+#include "Config.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 using namespace std;
-
-boost::unordered_map<string, string> Resource::types;
-
-Resource::Initializer::Initializer() {
-    Resource::types["html"] = "text/html"; 
-    Resource::types["css"] = "text/css"; 
-    Resource::types["js"] = "application/javascript"; 
-    Resource::types["jpg"] = "image/jpeg"; 
-    Resource::types["txt"] = "text/plain"; 
-}
 
 Resource::Resource(const string& path) {
     this->path = path.substr(1);
@@ -54,7 +45,7 @@ void Resource::checkSize() {
 }
 
 const string& Resource::getType() {
-    return Resource::types[extension];
+    return Config::instance().get("types", extension);
 }
 
 ssize_t Resource::getSize() {
