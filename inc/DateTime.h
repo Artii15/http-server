@@ -9,6 +9,7 @@ class DateTime {
     public:
         DateTime();
         DateTime(const std::string &date);
+        DateTime(const struct tm& clock);
         std::string getDate(); 
 
     private:

@@ -25,6 +25,7 @@ void HttpConnectionHandler::setStandardHeaders() {
     DateTime date;
     responseHeaders["Date"] = date.getDate();
     responseHeaders["Server"] = config->get("settings", "name");
+    responseHeaders["Connection"] = "close";
 }
 
 void HttpConnectionHandler::handleConnection() {
