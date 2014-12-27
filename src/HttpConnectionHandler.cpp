@@ -1,5 +1,6 @@
 #include "HttpConnectionHandler.h"
 #include "DateTime.h"
+#include "Config.h"
 #include <unistd.h>
 #include <sstream>
 #include <stdexcept>
@@ -14,6 +15,7 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     statusLine = "";
     message = "";
     res = NULL;
+    config = &Config::instance();
 
     setStandardHeaders();
 }
@@ -21,7 +23,7 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
 void HttpConnectionHandler::setStandardHeaders() {
     DateTime date;
     responseHeaders["Date"] = date.getDate();
-    responseHeaders["Server"] = "Xperimental";
+    responseHeaders["Server"] = config->get("settings", "name");
 }
 
 void HttpConnectionHandler::handleConnection() {
@@ -80,6 +82,10 @@ void HttpConnectionHandler::readVersionMinor() {
 
     if(this->httpMinor < 0) {
         throw HttpException(400, "Bad Request");
+    }
+
+    if(this->httpMinor > 1) {
+        this->httpMinor = 1;
     }
 }
 

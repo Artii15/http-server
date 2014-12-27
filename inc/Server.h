@@ -5,9 +5,11 @@
 #include <pthread.h>
 #include <string>
 #include "HttpConnectionHandler.h"
+#include "Config.h"
 
 class Server {
     private: 
+        Config *config;
         struct sockaddr_in stAddr;
         int port;
         int queueSize;

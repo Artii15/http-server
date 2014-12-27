@@ -5,6 +5,7 @@
 #include "HttpHeaderReader.h"
 #include "HttpException.h"
 #include "Resource.h"
+#include "Config.h"
 #include <string>
 #include <boost/unordered_map.hpp>
 
@@ -16,6 +17,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         std::string statusLine;
         std::string message;
         Resource *res;
+        Config *config;
 
         void setStandardHeaders();
         void readRequest();

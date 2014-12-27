@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "Config.h"
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -19,14 +18,13 @@ Server::Server() {
 }
 
 void Server::readSettings() {
-    Config &config = Config::instance();
+    config = &Config::instance();
+    service = config->get("settings", "service");
 
-    service = config.get("settings", "service");
-
-    istringstream ss(config.get("settings", "port"));
+    istringstream ss(config->get("settings", "port"));
     ss >> port;
 
-    ss.str(config.get("settings", "queue_size"));
+    ss.str(config->get("settings", "queue_size"));
     ss >> queueSize;
 }
 
