@@ -110,14 +110,18 @@ void HttpConnectionHandler::normalizeHostHeader() {
 
 void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
+    string& url = reader.get("url");
+    if(url == "/") {
+        url = "index.html";
+    }
 
     if(method == "GET") {
-        res = new Resource(config->get("domains", host), reader.get("url"));
+        res = new Resource(config->get("domains", host), url);
         performGet();
         delete res;
     }
     else if(method == "HEAD") {
-        res = new Resource(config->get("domains", host), reader.get("url"));
+        res = new Resource(config->get("domains", host), url);
         performHead();
         delete res;
     }
