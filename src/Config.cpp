@@ -1,4 +1,6 @@
 #include "Config.h"
+#include <fstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -9,13 +11,15 @@ Config& Config::factory() {
 }
 
 Config::Config() {
-
+     
 }
 
-void Config::load(const char* path) {
-    
+void Config::load(const char* path, const string& key) {
+    ifstream file(path);  
+
+    file.close();
 }
 
-const string& Config::get(const string& key) {
-    return settings[key];
+const string& Config::get(const string& outerKey, const string& innerKey) {
+    return settings[outerKey][innerKey];
 }
