@@ -36,7 +36,9 @@ void Config::load(const string& path, const string& outerKey) {
             value += line[i++];
         }
 
-        settings[outerKey][innerKey] = value;
+        if(!innerKey.empty() && !value.empty()) {
+            settings[outerKey][innerKey] = value;
+        }
     }
 
     file.close();
