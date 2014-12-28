@@ -15,6 +15,7 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     res = NULL;
     config = &Config::instance();
     sendResource = false;
+    closeConnection = false;
 
     istringstream ss(config->get("settings", "max_persistent_connections"));
     ss >> connectionTokens;
@@ -24,15 +25,16 @@ void HttpConnectionHandler::setStandardHeaders() {
     date = DateTime();
     responseHeaders["Date"] = date.getDate();
     responseHeaders["Server"] = config->get("settings", "name");
-    responseHeaders["Connection"] = "close";
 }
 
 void HttpConnectionHandler::handleConnection() {
     setStandardHeaders();
     try {
-        readRequest();
-        respond();
-        connectionTokens--;
+        while(!closeConnection) {
+            readRequest();
+            removeToken();
+            respond();
+        }
     }
     catch(HttpException &ex) {
         reportError(ex);
@@ -50,6 +52,7 @@ void HttpConnectionHandler::readRequest() {
     readVersionMinor();
     normalizeHostHeader();
     readUrl();
+    readConnection();
 }
 
 void HttpConnectionHandler::verifyProtocolName() {
@@ -122,10 +125,30 @@ void HttpConnectionHandler::readUrl() {
     }
 }
 
+void HttpConnectionHandler::readConnection() {
+    const string& requestedConnection = reader.get("connection");
+    if(requestedConnection == "close") {
+        closeConnection = true;
+    }
+    else if(requestedConnection.empty() && httpMinor == "0") {
+        closeConnection = true;
+    }
+    else {
+        closeConnection = false;
+    }
+}
+
 void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
     message = "";
     sendResource = true;
+
+    if(closeConnection) {
+        responseHeaders["Connection"] = "close";
+    }
+    else {
+        responseHeaders["Connection"] = "keep-alive";
+    }
 
     if(method == "GET") {
         res = new Resource(config->get("domains", host), url);
@@ -206,7 +229,6 @@ void HttpConnectionHandler::reportError(const HttpException &ex) {
 
     responseHeaders["Content-Length"] = ss.str();
     responseHeaders["Content-Type"] = "text/html";
-    responseHeaders["Connection"] = "close";
 
     send();
 }
@@ -263,5 +285,12 @@ void HttpConnectionHandler::sendMessage() {
 
     for(unsigned int toSend = messageLen; toSend > 0; toSend -= sent) {
         sent = write(sck, message.c_str(), messageLen);
+    }
+}
+
+void HttpConnectionHandler::removeToken() {
+    connectionTokens--;    
+    if(connectionTokens <= 0) {
+        closeConnection = true;
     }
 }

@@ -22,6 +22,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         DateTime date;
         std::string statusCode;
         bool sendResource;
+        bool closeConnection;
         unsigned int connectionTokens;
 
         void setStandardHeaders();
@@ -31,6 +32,9 @@ class HttpConnectionHandler: public ConnectionHandler {
         void readVersionMinor();
         void normalizeHostHeader();
         void readUrl();
+        void readConnection();
+
+        void removeToken();
 
         void respond();
         void performHead();
@@ -42,6 +46,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         void sendHeaders();
         void sendSeparator();
         void sendMessage();
+
     public:
         HttpConnectionHandler(int sck);
         void handleConnection();
