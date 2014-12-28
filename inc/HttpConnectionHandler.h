@@ -17,6 +17,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         std::string statusLine;
         std::string message;
         std::string host;
+        std::string url;
         Resource *res;
         Config *config;
 
@@ -26,6 +27,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         void verifyVersionMajor();
         void readVersionMinor();
         void normalizeHostHeader();
+        void readUrl();
 
         void respond();
         void performHead();

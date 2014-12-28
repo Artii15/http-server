@@ -48,6 +48,7 @@ void HttpConnectionHandler::readRequest() {
     verifyVersionMajor();
     readVersionMinor();
     normalizeHostHeader();
+    readUrl();
 }
 
 void HttpConnectionHandler::verifyProtocolName() {
@@ -88,7 +89,7 @@ void HttpConnectionHandler::readVersionMinor() {
         throw HttpException(400, "Bad Request");
     }
 
-    if(httpMinor == 1 && reader.get("host") == "") {
+    if(httpMinor == 1 && reader.get("host").empty()) {
         throw HttpException(400, "Bad Request");
     }
 }
@@ -106,6 +107,19 @@ void HttpConnectionHandler::normalizeHostHeader() {
         else {
             this->host = requestedHost;
         }
+    }
+}
+
+void HttpConnectionHandler::readUrl() {
+    const string& url = reader.get("url"); 
+    
+    if(url.length() > 7 && url.substr(0, 7) == "http://") {
+        unsigned int slashPos = url.find('/', 7);
+        this->host = url.substr(7, slashPos - 7);
+        this->url = url.substr(slashPos);
+    }
+    else {
+        this->url = url;
     }
 }
 

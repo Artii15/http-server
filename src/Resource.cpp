@@ -56,6 +56,9 @@ void Resource::validatePath() {
 }
 
 void Resource::makeFullPath() {
+    if(baseDir.empty()) {
+        throw HttpException(404, "Not Found");
+    }
     fullPath = baseDir;
     if(!fullPath.empty() && fullPath[fullPath.length() - 1] != '/') {
         fullPath += '/';
