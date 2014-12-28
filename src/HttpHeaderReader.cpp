@@ -5,16 +5,21 @@
 
 using namespace std;
 
+HttpHeaderReader::HttpHeaderReader(const unsigned int bufSize) {
+    this->bufSize = bufSize;
+}
+
 void HttpHeaderReader::readHeader(const int sck) {
     processedLine = "";
     processedHeader.clear();
 
-    bzero(buffer, sizeof(buffer));
+    buffer = new char[bufSize]();
     do {
-        ssize_t bytesReceived = read(sck, buffer, sizeof(buffer));
+        ssize_t bytesReceived = read(sck, buffer, bufSize);
         processBuffer();
         bzero(buffer, bytesReceived);
     } while(!headerReaded());
+    delete [] buffer;
 
     mergeMultipleLinedHeaders();
     mapHeader();
@@ -23,7 +28,7 @@ void HttpHeaderReader::readHeader(const int sck) {
 
 void HttpHeaderReader::processBuffer() {
     unsigned i = 0;
-    while(i < sizeof(buffer) && buffer[i] != '\0') {
+    while(i < bufSize && buffer[i] != '\0') {
         processedLine += buffer[i];
         if(buffer[i] == '\n') {
             linesBuffer.push_back(processedLine);
