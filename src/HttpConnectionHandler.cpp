@@ -160,7 +160,7 @@ void HttpConnectionHandler::performGet() {
 void HttpConnectionHandler::performHead() {
     const DateTime& modificationDate = res->getModificationDate();
     statusCode = "";
-/*
+
     if(!reader.get("if-modified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-modified-since"));
         if(requestedDate <= *date && modificationDate <= requestedDate) {
@@ -175,7 +175,7 @@ void HttpConnectionHandler::performHead() {
             sendResource = false;
         }
     }
-*/
+
     responseHeaders["Last-Modified"] = modificationDate.getDate();
 
     if(statusCode.empty()) {

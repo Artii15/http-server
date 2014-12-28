@@ -31,12 +31,12 @@ DateTime::DateTime(const string &date) {
 
     strptime(date.c_str(), matchedFormat.c_str(), &gmtTime);
     strncpy(formatedDate, date.c_str(), sizeof(formatedDate));
-    rawTime = mktime(&gmtTime);
+    rawTime = timegm(&gmtTime);
 }
 
 DateTime::DateTime(const struct tm& clock) {
     gmtTime = clock;
-    rawTime = mktime(&gmtTime);
+    rawTime = timegm(&gmtTime);
     strftime(formatedDate, sizeof(formatedDate), "%a, %d %b %Y %H:%M:%S GMT", &gmtTime);
 }
 
