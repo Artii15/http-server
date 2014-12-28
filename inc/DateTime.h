@@ -18,7 +18,7 @@ class DateTime {
         DateTime();
         DateTime(const std::string &date);
         DateTime(const struct tm& clock);
-        std::string getDate() const;
+        const char* getDate() const;
         bool operator==(const DateTime& date) const;
         bool operator>(const DateTime& date) const;
 };

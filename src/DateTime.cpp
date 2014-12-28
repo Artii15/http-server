@@ -1,6 +1,7 @@
 #include "DateTime.h"
 #include <stdexcept>
 #include <string>
+#include <string.h>
 
 using namespace std;
 using namespace boost;
@@ -13,18 +14,24 @@ DateTime::DateTime() {
 
 DateTime::DateTime(const string &date) {
     initializeFormats();
-    if(regex_match(date, acceptedFormats[0])) {
+    string matchedFormat = "";
 
+    if(regex_match(date, acceptedFormats[0])) {
+        matchedFormat = "%a, %d %b %Y %H:%M:%S GMT";
     }
     else if(regex_match(date, acceptedFormats[1])) {
-
+        matchedFormat = "%a, %d-%b-%y %H:%M:%S GMT";
     }
     else if(regex_match(date, acceptedFormats[2])) {
-
+        matchedFormat = "%a %b %d %H:%M:%S %Y";
     }
     else {
         throw std::runtime_error("Unknown date format");
     }
+
+    strptime(date.c_str(), matchedFormat.c_str(), &gmtTime);
+    strncpy(formatedDate, date.c_str(), sizeof(formatedDate));
+    rawTime = mktime(&gmtTime);
 }
 
 DateTime::DateTime(const struct tm& clock) {
@@ -39,7 +46,7 @@ void DateTime::initializeFormats() {
     acceptedFormats[2] = regex("^(\\u\\l{2})\\s(\\u\\l{2})\\s(\\d{1,2})\\s(\\d{1,2}):(\\d{1,2}):(\\d{1,2})\\s(\\d{4})$");
 }
 
-string DateTime::getDate() const {
+const char* DateTime::getDate() const {
     return formatedDate;
 }
 
