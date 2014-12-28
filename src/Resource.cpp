@@ -12,7 +12,7 @@ Resource::Resource(const string& baseDir, const string& path) {
     this->baseDir = baseDir;
     this->path = path;
     this->extension = "";
-    this->size = -1;
+    this->size = 0;
 
     normalizePath();
     validatePath();

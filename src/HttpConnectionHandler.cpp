@@ -161,16 +161,20 @@ void HttpConnectionHandler::performHead() {
     responseHeaders["Last-Modified"] = modificationDate.getDate();
     
     const string& type = res->getType();
-    if(type != "") {
+    if(!type.empty()) {
         responseHeaders["Content-Type"] = type;
     }
 
-    ssize_t size = res->getSize();
-    if(size >= 0) {
-        ostringstream ss;
-        ss << size;
-        responseHeaders["Content-Length"] = ss.str();
+    if(!reader.get("if-modified-since").empty()) {
+        DateTime requestedDate = DateTime(reader.get("if-modified-since"));
     }
+    else if(!reader.get("if-unmodified-since").empty()) {
+        DateTime requestedDate = DateTime(reader.get("if-unmodified-since"));
+    }
+
+    ostringstream ss;
+    ss << res->getSize();
+    responseHeaders["Content-Length"] = ss.str();
 }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
