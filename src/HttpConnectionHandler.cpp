@@ -121,14 +121,14 @@ void HttpConnectionHandler::readUrl() {
     else {
         this->url = url;
     }
+
+    if(this->url == "/") {
+        this->url = config->get("settings", "default_resource");
+    }
 }
 
 void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
-    string& url = reader.get("url");
-    if(url == "/") {
-        url = "index.html";
-    }
 
     if(method == "GET") {
         res = new Resource(config->get("domains", host), url);

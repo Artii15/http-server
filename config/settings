@@ -2,3 +2,4 @@ queue_size=10
 port=80
 service=http
 name=Xperimental
+default_resource=index.html
