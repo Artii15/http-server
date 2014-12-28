@@ -36,6 +36,7 @@ void HttpConnectionHandler::handleConnection() {
     try {
         readRequest();
         respond();
+        connectionTokens--;
     }
     catch(HttpException &ex) {
         reportError(ex);

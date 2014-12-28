@@ -16,6 +16,7 @@ class DateTime {
 
     public:
         DateTime();
+        DateTime(const DateTime& date);
         DateTime(const std::string &date);
         DateTime(const struct tm& clock);
         const char* getDate() const;

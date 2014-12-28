@@ -12,6 +12,12 @@ DateTime::DateTime() {
     strftime(formatedDate, sizeof(formatedDate), "%a, %d %b %Y %H:%M:%S GMT", &gmtTime);
 }
 
+DateTime::DateTime(const DateTime& date) {
+    rawTime = date.rawTime;
+    gmtTime = date.gmtTime;
+    strcpy(formatedDate, date.formatedDate);
+}
+
 DateTime::DateTime(const string &date) {
     initializeFormats();
     string matchedFormat = "";
