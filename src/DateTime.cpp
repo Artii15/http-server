@@ -1,4 +1,5 @@
 #include "DateTime.h"
+#include <stdexcept>
 #include <string>
 
 using namespace std;
@@ -12,6 +13,18 @@ DateTime::DateTime() {
 
 DateTime::DateTime(const string &date) {
     initializeFormats();
+    if(regex_match(date, acceptedFormats[0])) {
+
+    }
+    else if(regex_match(date, acceptedFormats[1])) {
+
+    }
+    else if(regex_match(date, acceptedFormats[2])) {
+
+    }
+    else {
+        throw std::runtime_error("Unknown date format");
+    }
 }
 
 DateTime::DateTime(const struct tm& clock) {

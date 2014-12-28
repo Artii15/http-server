@@ -167,6 +167,7 @@ void HttpConnectionHandler::performHead() {
 
     if(!reader.get("if-modified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-modified-since"));
+        cout << requestedDate.getDate() << endl;
     }
     else if(!reader.get("if-unmodified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-unmodified-since"));
