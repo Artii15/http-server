@@ -43,6 +43,7 @@ void HttpConnectionHandler::handleConnection() {
         HttpException criticalEx("500 Internal Server Error");
         reportError(criticalEx);
     }
+    cout << "handled" << endl;
 }
 
 void HttpConnectionHandler::readRequest() {
