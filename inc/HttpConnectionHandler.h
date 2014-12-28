@@ -20,6 +20,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         Resource *res;
         Config *config;
         std::string statusCode;
+        bool sendResource;
 
         void setStandardHeaders();
         void readRequest();

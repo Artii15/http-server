@@ -14,6 +14,7 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     httpMinor = "1"; 
     res = NULL;
     config = &Config::instance();
+    sendResource = false;
 
     setStandardHeaders();
 }
@@ -113,13 +114,15 @@ void HttpConnectionHandler::readUrl() {
         this->url = url;
     }
 
-    if(this->url == "/") {
+    if(this->url == "/" || this->url.empty()) {
         this->url = config->get("settings", "default_resource");
     }
 }
 
 void HttpConnectionHandler::respond() {
     const string& method = reader.get("method");
+    message = "";
+    sendResource = true;
 
     if(method == "GET") {
         res = new Resource(config->get("domains", host), url);
@@ -127,6 +130,7 @@ void HttpConnectionHandler::respond() {
         delete res;
     }
     else if(method == "HEAD") {
+        sendResource = false;
         res = new Resource(config->get("domains", host), url);
         performHead();
         delete res;
@@ -140,17 +144,21 @@ void HttpConnectionHandler::respond() {
 
 void HttpConnectionHandler::performGet() {
     performHead();
-    
-    fstream &file = res->getResource();
-    file.seekg(0, ios::beg);
+    if(sendResource == true) {
+        fstream &file = res->getResource();
+        file.seekg(0, ios::beg);
 
-    size_t messageSize = res->getSize();
-    message.resize(messageSize);
-    file.read(&message[0], messageSize);
+        size_t messageSize = res->getSize();
+        message.resize(messageSize);
+        file.read(&message[0], messageSize);
+    }
 }
 
 void HttpConnectionHandler::performHead() {
     statusCode = "200 OK";
+
+    const DateTime& modificationDate = res->getModificationDate();
+    responseHeaders["Last-Modified"] = modificationDate.getDate();
     
     const string& type = res->getType();
     if(type != "") {
@@ -163,8 +171,7 @@ void HttpConnectionHandler::performHead() {
         ss << size;
         responseHeaders["Content-Length"] = ss.str();
     }
-
-    message = ""; }
+}
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
     ostringstream ss;
@@ -189,7 +196,9 @@ void HttpConnectionHandler::send() {
     sendStatus();
     sendHeaders();
     sendSeparator();
-    sendMessage();
+    if(sendResource) {
+        sendMessage();
+    }
 }
 
 void HttpConnectionHandler::sendStatus() {
