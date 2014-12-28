@@ -15,18 +15,14 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     res = NULL;
     config = &Config::instance();
     sendResource = false;
-    date = NULL;
 
     istringstream ss(config->get("settings", "max_persistent_connections"));
     ss >> connectionTokens;
 }
 
 void HttpConnectionHandler::setStandardHeaders() {
-    if(date != NULL) {
-        delete date;
-    }
-    date = new DateTime();
-    responseHeaders["Date"] = date->getDate();
+    date = DateTime();
+    responseHeaders["Date"] = date.getDate();
     responseHeaders["Server"] = config->get("settings", "name");
     responseHeaders["Connection"] = "close";
 }
@@ -167,14 +163,14 @@ void HttpConnectionHandler::performHead() {
 
     if(!reader.get("if-modified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-modified-since"));
-        if(requestedDate <= *date && modificationDate <= requestedDate) {
+        if(requestedDate <= date && modificationDate <= requestedDate) {
             statusCode = "304 Not Modified";         
             sendResource = false;
         }
     }
     else if(!reader.get("if-unmodified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-unmodified-since"));
-        if(requestedDate <= *date && modificationDate > requestedDate) {
+        if(requestedDate <= date && modificationDate > requestedDate) {
             statusCode = "412 Precondition Failed";         
             sendResource = false;
         }
@@ -267,11 +263,5 @@ void HttpConnectionHandler::sendMessage() {
 
     for(unsigned int toSend = messageLen; toSend > 0; toSend -= sent) {
         sent = write(sck, message.c_str(), messageLen);
-    }
-}
-
-HttpConnectionHandler::~HttpConnectionHandler() {
-    if(date != NULL) {
-        delete date;
     }
 }
