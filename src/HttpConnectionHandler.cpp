@@ -11,10 +11,7 @@ using namespace std;
 
 HttpConnectionHandler::HttpConnectionHandler(int sck) 
 : ConnectionHandler(sck) {
-    httpMinor = 1; 
-    statusLine = "";
-    message = "";
-    host = "";
+    httpMinor = "1"; 
     res = NULL;
     config = &Config::instance();
 
@@ -78,18 +75,12 @@ void HttpConnectionHandler::readVersionMinor() {
     const string &protocol = reader.get("protocol");
     unsigned int protocolLen = protocol.length();
 
-    string minor = "";
+    httpMinor = "";
     for(unsigned int i = 7; i < protocolLen; i++) {
-        minor += protocol[i];
-    }
-    istringstream iss(minor);
-    iss >> httpMinor;
-
-    if(httpMinor < 0) {
-        throw HttpException(400, "Bad Request");
+        httpMinor += protocol[i];
     }
 
-    if(httpMinor == 1 && reader.get("host").empty()) {
+    if(httpMinor == "1" && reader.get("host").empty()) {
         throw HttpException(400, "Bad Request");
     }
 }
@@ -159,10 +150,7 @@ void HttpConnectionHandler::performGet() {
 }
 
 void HttpConnectionHandler::performHead() {
-    ostringstream ss;
-    ss << "HTTP/1." << httpMinor << " 200 OK";
-    statusLine = ss.str();
-    ss.str("");
+    statusCode = "200 OK";
     
     const string& type = res->getType();
     if(type != "") {
@@ -171,18 +159,18 @@ void HttpConnectionHandler::performHead() {
 
     ssize_t size = res->getSize();
     if(size >= 0) {
+        ostringstream ss;
         ss << size;
         responseHeaders["Content-Length"] = ss.str();
     }
 
-    message = "";
-}
+    message = ""; }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
     ostringstream ss;
-    ss << "HTTP/1." << httpMinor << " " << ex.getCode() << " " << ex.getMessage();
+    ss << ex.getCode() << " " << ex.getMessage();
+    statusCode = ss.str();
 
-    statusLine = ss.str();
     ss.str("");
 
     ss << "<html><head></head><body><h1>" << ex.getCode() << " " << ex.getMessage() << "</h1></body></html>";
@@ -206,7 +194,7 @@ void HttpConnectionHandler::send() {
 }
 
 void HttpConnectionHandler::sendStatus() {
-    statusLine += "\r\n";
+    string statusLine = "HTTP/1." + httpMinor + " " + statusCode + "\r\n";
     size_t statusLen = statusLine.length();
     unsigned int sent = 0;
 

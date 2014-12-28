@@ -12,14 +12,14 @@
 class HttpConnectionHandler: public ConnectionHandler {
     private:
         HttpHeaderReader reader;
-        short httpMinor;
         boost::unordered_map<std::string, std::string> responseHeaders;
-        std::string statusLine;
+        std::string httpMinor;
         std::string message;
         std::string host;
         std::string url;
         Resource *res;
         Config *config;
+        std::string statusCode;
 
         void setStandardHeaders();
         void readRequest();
