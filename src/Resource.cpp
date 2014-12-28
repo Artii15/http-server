@@ -50,14 +50,14 @@ void Resource::validatePath() {
             guard++;
         }
         if(guard < 0) {
-            throw HttpException(403, "Forbiden");
+            throw HttpException("403 Forbiden");
         }
     }
 }
 
 void Resource::makeFullPath() {
     if(baseDir.empty()) {
-        throw HttpException(404, "Not Found");
+        throw HttpException("404 Not Found");
     }
     fullPath = baseDir;
     if(!fullPath.empty() && fullPath[fullPath.length() - 1] != '/') {
@@ -70,14 +70,14 @@ void Resource::makeFullPath() {
 void Resource::openFile() {
     file.open(fullPath.c_str(), ios::in | ios::binary);
     if(!file.good()) {
-        throw HttpException(404, "Not Found");
+        throw HttpException("404 Not Found");
     }
 
     struct stat st_buf;
     stat(fullPath.c_str(), &st_buf);
     if(S_ISDIR(st_buf.st_mode)) {
         file.close();
-        throw HttpException(403, "Forbidden");
+        throw HttpException("403 Forbidden");
     }
 }
 

@@ -34,7 +34,7 @@ void HttpConnectionHandler::handleConnection() {
         reportError(ex);
     }
     catch(exception &ex) {
-        HttpException criticalEx(500, "Internal Server Error");
+        HttpException criticalEx("500 Internal Server Error");
         reportError(criticalEx);
     }
 }
@@ -51,7 +51,7 @@ void HttpConnectionHandler::readRequest() {
 void HttpConnectionHandler::verifyProtocolName() {
     const string &protocol = reader.get("protocol");
     if(protocol.substr(0, 4) != "HTTP") {
-        throw HttpException(400, "Bad Request");
+        throw HttpException("400 Bad Request");
     }
 }
 
@@ -67,7 +67,7 @@ void HttpConnectionHandler::verifyVersionMajor() {
     i++;
 
     if(major != "1") {
-        throw HttpException(501, "Not Implemented");
+        throw HttpException("501 Not Implemented");
     }
 }
 
@@ -81,7 +81,7 @@ void HttpConnectionHandler::readVersionMinor() {
     }
 
     if(httpMinor == "1" && reader.get("host").empty()) {
-        throw HttpException(400, "Bad Request");
+        throw HttpException("400 Bad Request");
     }
 }
 
@@ -132,7 +132,7 @@ void HttpConnectionHandler::respond() {
         delete res;
     }
     else {
-        throw HttpException(501, "Not Implemented");
+        throw HttpException("501 Not Implemented");
     }
 
     send();
@@ -168,12 +168,11 @@ void HttpConnectionHandler::performHead() {
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
     ostringstream ss;
-    ss << ex.getCode() << " " << ex.getMessage();
-    statusCode = ss.str();
+    statusCode = ex.what();
 
     ss.str("");
 
-    ss << "<html><head></head><body><h1>" << ex.getCode() << " " << ex.getMessage() << "</h1></body></html>";
+    ss << "<html><head></head><body><h1>" << ex.what() << "</h1></body></html>";
     message = ss.str();
 
     ss.str("");

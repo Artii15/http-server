@@ -4,14 +4,11 @@
 #include <string>
 
 class HttpException {
-    public:
-        HttpException(unsigned int code, const std::string &msg);
-        unsigned int getCode() const;
-        const std::string& getMessage() const;
-
     private:
-        unsigned int code;
         std::string msg;
+    public:
+        HttpException(const std::string &msg);
+        const std::string& what() const;
 };
 
 #endif
