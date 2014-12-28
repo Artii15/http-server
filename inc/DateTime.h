@@ -20,6 +20,7 @@ class DateTime {
         DateTime(const struct tm& clock);
         const char* getDate() const;
         bool operator==(const DateTime& date) const;
+        bool operator<=(const DateTime& date) const;
         bool operator>(const DateTime& date) const;
 };
 

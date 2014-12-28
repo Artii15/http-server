@@ -54,6 +54,10 @@ bool DateTime::operator==(const DateTime& date) const {
     return this->rawTime == date.rawTime; 
 }
 
+bool DateTime::operator<=(const DateTime& date) const {
+    return this->rawTime <= date.rawTime;
+}
+
 bool DateTime::operator>(const DateTime& date) const {
     return this->rawTime > date.rawTime;
 }

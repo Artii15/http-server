@@ -19,6 +19,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         std::string url;
         Resource *res;
         Config *config;
+        DateTime *date;
         std::string statusCode;
         bool sendResource;
 
@@ -43,6 +44,7 @@ class HttpConnectionHandler: public ConnectionHandler {
     public:
         HttpConnectionHandler(int sck);
         void handleConnection();
+        ~HttpConnectionHandler();
 };
 
 #endif

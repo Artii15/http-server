@@ -15,18 +15,21 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     res = NULL;
     config = &Config::instance();
     sendResource = false;
-
-    setStandardHeaders();
+    date = NULL;
 }
 
 void HttpConnectionHandler::setStandardHeaders() {
-    DateTime date;
-    responseHeaders["Date"] = date.getDate();
+    if(date != NULL) {
+        delete date;
+    }
+    date = new DateTime();
+    responseHeaders["Date"] = date->getDate();
     responseHeaders["Server"] = config->get("settings", "name");
     responseHeaders["Connection"] = "close";
 }
 
 void HttpConnectionHandler::handleConnection() {
+    setStandardHeaders();
     try {
         readRequest();
         respond();
@@ -155,27 +158,38 @@ void HttpConnectionHandler::performGet() {
 }
 
 void HttpConnectionHandler::performHead() {
-    statusCode = "200 OK";
-
     const DateTime& modificationDate = res->getModificationDate();
-    responseHeaders["Last-Modified"] = modificationDate.getDate();
-    
-    const string& type = res->getType();
-    if(!type.empty()) {
-        responseHeaders["Content-Type"] = type;
-    }
-
+    statusCode = "";
+/*
     if(!reader.get("if-modified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-modified-since"));
-        cout << requestedDate.getDate() << endl;
+        if(requestedDate <= *date && modificationDate <= requestedDate) {
+            statusCode = "304 Not Modified";         
+            sendResource = false;
+        }
     }
     else if(!reader.get("if-unmodified-since").empty()) {
         DateTime requestedDate = DateTime(reader.get("if-unmodified-since"));
+        if(requestedDate <= *date && modificationDate > requestedDate) {
+            statusCode = "412 Precondition Failed";         
+            sendResource = false;
+        }
     }
+*/
+    responseHeaders["Last-Modified"] = modificationDate.getDate();
 
-    ostringstream ss;
-    ss << res->getSize();
-    responseHeaders["Content-Length"] = ss.str();
+    if(statusCode.empty()) {
+        statusCode = "200 OK";
+    
+        const string& type = res->getType();
+        if(!type.empty()) {
+            responseHeaders["Content-Type"] = type;
+        }
+
+        ostringstream ss;
+        ss << res->getSize();
+        responseHeaders["Content-Length"] = ss.str();
+    }
 }
 
 void HttpConnectionHandler::reportError(const HttpException &ex) {
@@ -249,5 +263,11 @@ void HttpConnectionHandler::sendMessage() {
 
     for(unsigned int toSend = messageLen; toSend > 0; toSend -= sent) {
         sent = write(sck, message.c_str(), messageLen);
+    }
+}
+
+HttpConnectionHandler::~HttpConnectionHandler() {
+    if(date != NULL) {
+        delete date;
     }
 }
