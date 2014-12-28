@@ -22,6 +22,7 @@ class HttpConnectionHandler: public ConnectionHandler {
         DateTime *date;
         std::string statusCode;
         bool sendResource;
+        unsigned int connectionTokens;
 
         void setStandardHeaders();
         void readRequest();

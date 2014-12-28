@@ -16,6 +16,9 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     config = &Config::instance();
     sendResource = false;
     date = NULL;
+
+    istringstream ss(config->get("settings", "max_persistent_connections"));
+    ss >> connectionTokens;
 }
 
 void HttpConnectionHandler::setStandardHeaders() {
