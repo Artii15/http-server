@@ -32,10 +32,12 @@ void HttpConnectionHandler::handleConnection() {
     try {
         while(!closeConnection) {
             readRequest();
-            cout << "handled" << endl;
             removeToken();
             respond();
         }
+    }
+    catch(logic_error &ex) {
+        return;
     }
     catch(HttpException &ex) {
         reportError(ex);

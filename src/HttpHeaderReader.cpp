@@ -1,29 +1,60 @@
 #include "HttpHeaderReader.h"
+#include "Config.h"
+#include "HttpException.h"
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/select.h>
 #include <ctype.h>
 #include <strings.h>
+#include <stdexcept>
+#include <sstream>
 
 using namespace std;
 
 HttpHeaderReader::HttpHeaderReader(const unsigned int bufSize) {
     this->bufSize = bufSize;
+    istringstream ss(Config::instance().get("settings", "timeout"));
+
+    ss >> timeout.tv_sec;
+    timeout.tv_usec = 0;
 }
 
 void HttpHeaderReader::readHeader(const int sck) {
     processedLine = "";
     processedHeader.clear();
 
-    buffer = new char[bufSize]();
-    do {
-        ssize_t bytesReceived = read(sck, buffer, bufSize);
-        processBuffer();
-        bzero(buffer, bytesReceived);
-    } while(!headerReaded());
-    delete [] buffer;
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(sck, &readfds);
 
+    while(!headerReaded()) {
+        int status = select(sck+1, &readfds, NULL, NULL, &timeout);
+        if(status > 0) {
+            readBuffer(sck); 
+        }
+        else {
+            throw logic_error("Connection closed");
+        }
+    }
+    FD_ZERO(&readfds);
+  
     mergeMultipleLinedHeaders();
     mapHeader();
     linesBuffer.clear();
+}
+
+void HttpHeaderReader::readBuffer(const int sck) {
+    buffer = new char[bufSize]();
+    ssize_t bytesReceived = recv(sck, buffer, bufSize, MSG_DONTWAIT);
+    if(bytesReceived > 0) {
+        processBuffer();
+        delete [] buffer;
+    }
+    else {
+        delete [] buffer;
+        throw logic_error("Connection closed");
+    }
 }
 
 void HttpHeaderReader::processBuffer() {

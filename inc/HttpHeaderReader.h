@@ -13,7 +13,9 @@ class HttpHeaderReader {
         std::string processedLine;
         std::list<std::string> linesBuffer; 
         boost::unordered_map<std::string, std::string> processedHeader;
+        struct timeval timeout;
 
+        void readBuffer(const int sck);
         void processBuffer();
         bool headerReaded();
         void mergeMultipleLinedHeaders();
