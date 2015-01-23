@@ -15,10 +15,10 @@ void startServer();
 void stopServer(int signum);
 
 int main() {
-    loadConfig();
-    initialize();
-    signal(SIGINT, stopServer);
-    startServer();
+    loadConfig(); // Loading configuration files
+    initialize(); // Creating new server object
+    signal(SIGINT, stopServer); // Destroying server object after sigint
+    startServer(); // Starting server loop
 
     exit(0);
 }
