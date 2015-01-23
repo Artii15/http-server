@@ -26,6 +26,7 @@ Resource::Resource(const string& baseDir, const string& path) {
 void Resource::normalizePath() {
     unsigned int pathLen = path.length();
 
+    // removing "/" from the beginning of resource path
     if(pathLen == 1 && path[0] != '/') {
         path = "";
     }
@@ -38,6 +39,7 @@ void Resource::validatePath() {
     stringstream ss(path);
     string segment;
 
+    // very simple checking if client is trying to get resource outside of domain
     int guard = 0;
     while(getline(ss, segment, '/')) {
         if(segment.empty()) {
@@ -46,7 +48,7 @@ void Resource::validatePath() {
         if(segment == "..") {
             guard--;
         }
-        else {
+        else if(segment != ".") {
             guard++;
         }
         if(guard < 0) {
@@ -59,6 +61,8 @@ void Resource::makeFullPath() {
     if(baseDir.empty()) {
         throw HttpException("404 Not Found");
     }
+
+    // Concatenating domain folder with given url
     fullPath = baseDir;
     if(!fullPath.empty() && fullPath[fullPath.length() - 1] != '/') {
         fullPath += '/';
@@ -75,13 +79,14 @@ void Resource::openFile() {
 
     struct stat st_buf;
     stat(fullPath.c_str(), &st_buf);
-    if(S_ISDIR(st_buf.st_mode)) {
+    if(S_ISDIR(st_buf.st_mode)) { // Accessing folders not allowed
         file.close();
         throw HttpException("403 Forbidden");
     }
 }
 
 void Resource::checkExtension() {
+    // Reading file extension (needed to guess mime type)
     unsigned int dotPos = path.find_last_of('.');
     if(dotPos != string::npos) {
         extension = path.substr(dotPos + 1);
@@ -105,6 +110,7 @@ void Resource::checkModificationDate() {
 }
 
 const string& Resource::getType() {
+    // Type is based on extension. Types can be found in config/types
     return Config::instance().get("types", extension);
 }
 
