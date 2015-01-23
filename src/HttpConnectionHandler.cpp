@@ -17,9 +17,9 @@ HttpConnectionHandler::HttpConnectionHandler(int sck)
     sendResource = false;
     closeConnection = false;
 
-    // max_persistent_connections parameter determines how many times client can connect to server using same socket
+    // max_persistent_requests parameter determines how many times client can send request to server using same socket
     // each connection performed by a client to the same socket requires one "token"
-    istringstream ss(config->get("settings", "max_persistent_connections"));
+    istringstream ss(config->get("settings", "max_persistent_requests"));
     ss >> connectionTokens;
 }
 

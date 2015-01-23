@@ -3,5 +3,5 @@ port=80
 service=http
 name=Xperimental
 default_resource=index.html
-max_persistent_connections=100
+max_persistent_requests=100
 timeout=15
