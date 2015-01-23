@@ -14,7 +14,7 @@ using namespace std;
 
 HttpHeaderReader::HttpHeaderReader(const unsigned int bufSize) {
     this->bufSize = bufSize;
-    istringstream ss(Config::instance().get("settings", "timeout"));
+    istringstream ss(Config::instance().get("settings", "timeout")); // this parameter tells how much time server will be waiting for request from client
 
     ss >> timeout.tv_sec;
     timeout.tv_usec = 0;
@@ -26,7 +26,7 @@ void HttpHeaderReader::readHeader(const int sck) {
 
     fd_set readfds;
     FD_ZERO(&readfds);
-    FD_SET(sck, &readfds);
+    FD_SET(sck, &readfds); // let socket identified by sck var, be watched by select function
 
     while(!headerReaded()) {
         int status = select(sck+1, &readfds, NULL, NULL, &timeout);
@@ -34,7 +34,7 @@ void HttpHeaderReader::readHeader(const int sck) {
             readBuffer(sck); 
         }
         else {
-            throw logic_error("Connection closed");
+            throw logic_error("Connection closed"); // if error occurred (usually timeout), assume that client is inactive
         }
     }
     FD_ZERO(&readfds);
@@ -46,7 +46,7 @@ void HttpHeaderReader::readHeader(const int sck) {
 
 void HttpHeaderReader::readBuffer(const int sck) {
     buffer = new char[bufSize]();
-    ssize_t bytesReceived = recv(sck, buffer, bufSize, MSG_DONTWAIT);
+    ssize_t bytesReceived = recv(sck, buffer, bufSize, MSG_DONTWAIT); // Doesn't have to wait, because of select() function used in previous method
     if(bytesReceived > 0) {
         processBuffer();
         delete [] buffer;
@@ -58,6 +58,7 @@ void HttpHeaderReader::readBuffer(const int sck) {
 }
 
 void HttpHeaderReader::processBuffer() {
+    // extract separate lines from header
     unsigned i = 0;
     while(i < bufSize && buffer[i] != '\0') {
         processedLine += buffer[i];
@@ -76,6 +77,8 @@ bool HttpHeaderReader::headerReaded() {
 
     string *lastLine = &(linesBuffer.back());
     int lastLineLength = lastLine->length();
+
+    // Checking if last line consists of \r\n or \n
 
     if(lastLineLength > 0 && lastLine->at(0) == '\n') {
         return true;
@@ -96,6 +99,7 @@ void HttpHeaderReader::mergeMultipleLinedHeaders() {
     
     while(linesIt != linesBuffer.end()) {
         string &line = *linesIt;
+        // if line begins with whitespace, then it it's continuation of previous line
         if(line[0] == ' ' || line[0] == '\t') {
             linesIt--;
             
@@ -125,6 +129,8 @@ void HttpHeaderReader::mapHeader() {
 }
 
 void HttpHeaderReader::mapFirstLine(const string &line) {
+    // Saving whole header as hash map, so it will be easy to access any field
+
     unsigned int i = 0; 
     unsigned int lineLength = line.length();    
 
