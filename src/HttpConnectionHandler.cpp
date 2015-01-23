@@ -11,17 +11,20 @@ using namespace std;
 
 HttpConnectionHandler::HttpConnectionHandler(int sck) 
 : ConnectionHandler(sck) {
-    httpMinor = "1"; 
+    httpMinor = "1"; // Default http minor (may change during handling request if for example client uses HTTP 1.0)
     res = NULL;
     config = &Config::instance();
     sendResource = false;
     closeConnection = false;
 
+    // max_persistent_connections parameter determines how many times client can connect to server using same socket
+    // each connection performed by a client to the same socket requires one "token"
     istringstream ss(config->get("settings", "max_persistent_connections"));
     ss >> connectionTokens;
 }
 
 void HttpConnectionHandler::setStandardHeaders() {
+    // Setting current date and server name headers
     date = DateTime();
     responseHeaders["Date"] = date.getDate();
     responseHeaders["Server"] = config->get("settings", "name");
@@ -37,19 +40,21 @@ void HttpConnectionHandler::handleConnection() {
         }
     }
     catch(logic_error &ex) {
+        // This exception occurs when client is inactive for longer than timeout parameter, so just return from method
         return;
     }
     catch(HttpException &ex) {
-        reportError(ex);
+        reportError(ex); // Send errors associated with not existent resource, wrong permissions etc.
     }
     catch(exception &ex) {
+        // If something unexpected went wrong, send 500 status
         HttpException criticalEx("500 Internal Server Error");
-        reportError(criticalEx);
+        reportError(criticalEx); 
     }
 }
 
 void HttpConnectionHandler::readRequest() {
-    reader.readHeader(sck);    
+    reader.readHeader(sck); 
     verifyProtocolName();
     verifyVersionMajor();
     readVersionMinor();
@@ -59,6 +64,7 @@ void HttpConnectionHandler::readRequest() {
 }
 
 void HttpConnectionHandler::verifyProtocolName() {
+    // If client is trying to use protocol other than HTTP, then send 400 status
     const string &protocol = reader.get("protocol");
     if(protocol.substr(0, 4) != "HTTP") {
         throw HttpException("400 Bad Request");
@@ -66,6 +72,7 @@ void HttpConnectionHandler::verifyProtocolName() {
 }
 
 void HttpConnectionHandler::verifyVersionMajor() {
+    // Only HTTP 1.* allowed
     const string &protocol = reader.get("protocol");
     unsigned int protocolLen = protocol.length();
 
@@ -90,7 +97,7 @@ void HttpConnectionHandler::readVersionMinor() {
         httpMinor += protocol[i];
     }
 
-    if(httpMinor == "1" && reader.get("host").empty()) {
+    if(httpMinor == "1" && reader.get("host").empty()) { // Host header is required in HTTP 1.1
         throw HttpException("400 Bad Request");
     }
 }
@@ -98,9 +105,10 @@ void HttpConnectionHandler::readVersionMinor() {
 void HttpConnectionHandler::normalizeHostHeader() {
     const string &requestedHost = reader.get("host");
     if(requestedHost.empty()) {
-        this->host = "default";
+        this->host = "default"; // Use default domain if not specified (needed to handle 1.0 Http version)
     }
     else {
+        // Searching for colon in host header (part after colon is port nr, so ignore it)
         unsigned int colonPos = requestedHost.find(':');
         if(colonPos != string::npos) {
             this->host = requestedHost.substr(0, colonPos);
@@ -114,6 +122,7 @@ void HttpConnectionHandler::normalizeHostHeader() {
 void HttpConnectionHandler::readUrl() {
     const string& url = reader.get("url"); 
     
+    // Extract host from absolute url (if client gived absolute url)
     if(url.length() > 7 && url.substr(0, 7) == "http://") {
         unsigned int slashPos = url.find('/', 7);
         this->host = url.substr(7, slashPos - 7);
@@ -123,6 +132,7 @@ void HttpConnectionHandler::readUrl() {
         this->url = url;
     }
 
+    // If url is empty or it's "/" then load default resource (for example index.html)
     if(this->url == "/" || this->url.empty()) {
         this->url = config->get("settings", "default_resource");
     }
@@ -131,10 +141,10 @@ void HttpConnectionHandler::readUrl() {
 void HttpConnectionHandler::readConnection() {
     const string& requestedConnection = reader.get("connection");
     if(requestedConnection == "close") {
-        closeConnection = true;
+        closeConnection = true; // Close connection if client sent Connection: close header
     }
     else if(requestedConnection.empty() && httpMinor == "0") {
-        closeConnection = true;
+        closeConnection = true; // Close connection if client uses HTTP 1.0
     }
     else {
         closeConnection = false;
@@ -153,14 +163,15 @@ void HttpConnectionHandler::respond() {
         responseHeaders["Connection"] = "keep-alive";
     }
 
+    // Only GET and HEAD methods supported
     if(method == "GET") {
-        res = new Resource(config->get("domains", host), url);
+        res = new Resource(config->get("domains", host), url); 
         performGet();
         delete res;
     }
     else if(method == "HEAD") {
         sendResource = false;
-        res = new Resource(config->get("domains", host), url);
+        res = new Resource(config->get("domains", host), url); 
         performHead();
         delete res;
     }
@@ -172,14 +183,14 @@ void HttpConnectionHandler::respond() {
 }
 
 void HttpConnectionHandler::performGet() {
-    performHead();
+    performHead(); // Perfrom HEAD method first, (server has to send headers anyway)
     if(sendResource == true) {
         fstream &file = res->getResource();
         file.seekg(0, ios::beg);
 
         size_t messageSize = res->getSize();
         message.resize(messageSize);
-        file.read(&message[0], messageSize);
+        file.read(&message[0], messageSize); // read whole resource to buffer
     }
 }
 
@@ -204,7 +215,7 @@ void HttpConnectionHandler::performHead() {
 
     responseHeaders["Last-Modified"] = modificationDate.getDate();
 
-    if(statusCode.empty()) {
+    if(statusCode.empty()) { // Status code may be set earlier, if for example some errors occur
         statusCode = "200 OK";
     
         const string& type = res->getType();
@@ -218,6 +229,8 @@ void HttpConnectionHandler::performHead() {
     }
 }
 
+// This method sends hardcoded html with error message, used to handle exceptions and inform the client
+// that something went wrong
 void HttpConnectionHandler::reportError(const HttpException &ex) {
     ostringstream ss;
     statusCode = ex.what();
