@@ -5,6 +5,7 @@
 using namespace std;
 
 Config& Config::instance() {
+    // It's singleton
     static Config instance;
     
     return instance;
@@ -15,6 +16,8 @@ Config::Config() {
 }
 
 void Config::load(const string& path, const string& outerKey) {
+    // Reading settings from given file, assuming key=value\n format.
+    // Lines with other formats will be ignored 
     ifstream file(path.c_str());  
     if(!file.good()) {
         throw runtime_error("Couldn't open " + path);
