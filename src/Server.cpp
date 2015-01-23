@@ -10,11 +10,11 @@
 using namespace std;
 
 Server::Server() {
-    readSettings();
-    configureConnectionHandler();
-    configureMutex();
-    configureAddr();
-    configureSocket();
+    readSettings(); // reading info from config/settings
+    configureConnectionHandler(); // choosing concrete handler based on service type
+    configureMutex(); // mutex initialization 
+    configureAddr(); // filling sockaddr struct
+    configureSocket(); // Socket initalization (creating and binding, setting queue size)
 }
 
 void Server::readSettings() {
@@ -35,6 +35,7 @@ void Server::configureMutex() {
 }
 
 void Server::configureConnectionHandler() {
+    // Only http supported now
     if(service == "http") {
         connectionHandlerFactory = &Server::setHttpConnectionHandler;
     }
@@ -83,7 +84,7 @@ void Server::start() {
     struct sockaddr_in stClientAddr;
     socklen_t nTmp = sizeof(struct sockaddr);
 
-    while(1) {
+    while(1) { // Main server loop
         pthread_mutex_lock(&sckMutex);
 
         nClientSocket = accept(nSocket, (struct sockaddr*)&stClientAddr, &nTmp);
@@ -102,7 +103,7 @@ void Server::start() {
 
 void* Server::handleConnection(void *arg) {
     Server *context = (Server*)arg;
-    int sck = context->nClientSocket;
+    int sck = context->nClientSocket; // copying newly connected client sck, before server accepts another client
     pthread_mutex_unlock(&(context->sckMutex));
 
     ConnectionHandler* handler = context->connectionHandlerFactory(sck);
@@ -113,6 +114,7 @@ void* Server::handleConnection(void *arg) {
 }
 
 ConnectionHandler* Server::setHttpConnectionHandler(int sck) {
+    // Service delagated to another object
     return new HttpConnectionHandler(sck);
 }
 
