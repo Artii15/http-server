@@ -1,11 +1,11 @@
 #ifndef HTTP_CONNECTION_HANDLER_H
 #define HTTP_CONNECTION_HANDLER_H
 
-#include "ConnectionHandler.h"
-#include "HttpHeaderReader.h"
-#include "HttpException.h"
-#include "Resource.h"
-#include "Config.h"
+#include "../inc/ConnectionHandler.h"
+#include "../inc/HttpHeaderReader.h"
+#include "../inc/HttpException.h"
+#include "../inc/Resource.h"
+#include "../inc/Config.h"
 #include <string>
 #include <boost/unordered_map.hpp>
 

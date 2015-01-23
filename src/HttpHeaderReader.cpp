@@ -1,6 +1,6 @@
-#include "HttpHeaderReader.h"
-#include "Config.h"
-#include "HttpException.h"
+#include "../inc/HttpHeaderReader.h"
+#include "../inc/Config.h"
+#include "../inc/HttpException.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>

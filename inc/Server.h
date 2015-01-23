@@ -1,11 +1,11 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "../inc/HttpConnectionHandler.h"
+#include "../inc/Config.h"
 #include <netinet/in.h>
 #include <pthread.h>
 #include <string>
-#include "HttpConnectionHandler.h"
-#include "Config.h"
 
 class Server {
     private: 

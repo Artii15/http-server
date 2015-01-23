@@ -1,6 +1,6 @@
-#include "Resource.h"
-#include "HttpException.h"
-#include "Config.h"
+#include "../inc/Resource.h"
+#include "../inc/HttpException.h"
+#include "../inc/Config.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>

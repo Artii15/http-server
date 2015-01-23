@@ -1,4 +1,4 @@
-#include "Config.h"
+#include "../inc/Config.h"
 #include <fstream>
 #include <stdexcept>
 

@@ -1,4 +1,4 @@
-#include "ConnectionHandler.h"
+#include "../inc/ConnectionHandler.h"
 #include <unistd.h>
 
 // This abstract class implements only methods common for potentially all handlers

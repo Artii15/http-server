@@ -1,5 +1,5 @@
-#include "Server.h"
-#include "Config.h"
+#include "../inc/Server.h"
+#include "../inc/Config.h"
 #include <stdlib.h>
 #include <signal.h>
 #include <iostream>

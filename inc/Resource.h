@@ -1,7 +1,7 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-#include "DateTime.h"
+#include "../inc/DateTime.h"
 #include <string>
 #include <fstream>
 

@@ -1,6 +1,6 @@
-#include "HttpConnectionHandler.h"
-#include "DateTime.h"
-#include "Config.h"
+#include "../inc/HttpConnectionHandler.h"
+#include "../inc/DateTime.h"
+#include "../inc/Config.h"
 #include <unistd.h>
 #include <sstream>
 #include <stdexcept>
